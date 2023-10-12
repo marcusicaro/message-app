@@ -1,19 +1,18 @@
 const express = require('express');
+const app = express();
 const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+var cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const messageRouter = require('./routes/message');
 const Schema = mongoose.Schema;
 require('dotenv').config();
 const MongoDBKey = process.env.MONGODB_KEY;
 const SessionSecret = process.env.SESSION_SECRET.split(' ');
-
-const mongoDb = `mongodb+srv://admin:${MongoDBKey}@cluster0.lnrds0m.mongodb.net/chat_message?retryWrites=true&w=majority`;
-mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'mongo connection error'));
+require('./middlewares/mongoConfig');
 
 app.use(
   session({
@@ -55,3 +54,32 @@ passport.use(
     }
   })
 );
+
+app.use(function (req, res, next) {
+  res.locals.currentUser = req.user;
+  next();
+});
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use('/message', messageRouter);
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.json('there was an error');
+});
+
+app.listen(3002, () => console.log('app listening on port 3002!'));
+
+module.exports = app;

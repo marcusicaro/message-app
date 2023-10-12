@@ -12,9 +12,4 @@ GroupsSchema.virtual('url').get(function () {
   return `/groups/${this._id}`;
 });
 
-// Define a virtual property for formatted date
-GroupsSchema.virtual('formattedDate').get(function () {
-  return moment(this.timestamp).format('DD/MM/YYYY HH:mm');
-});
-
 module.exports = mongoose.model('Group', GroupsSchema);
