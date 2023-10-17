@@ -5,9 +5,12 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const messageRouter = require('./routes/message');
+const userRouter = require('./routes/user');
+const { body } = require('express-validator');
 const Schema = mongoose.Schema;
 require('dotenv').config();
 const MongoDBKey = process.env.MONGODB_KEY;
@@ -61,8 +64,10 @@ app.use(function (req, res, next) {
 });
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use('/message', messageRouter);
+app.use('/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

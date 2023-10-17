@@ -1,6 +1,5 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const mongoose = require('mongoose');
 const MongoDBKey = process.env.MONGODB_KEY;
 
 const mongoDb = `mongodb+srv://admin:${MongoDBKey}@cluster0.lnrds0m.mongodb.net/chat_message?retryWrites=true&w=majority`;
