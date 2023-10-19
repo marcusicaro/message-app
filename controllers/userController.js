@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const Token = require('../models/token');
+const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
@@ -31,17 +33,22 @@ exports.signup = asyncHandler(async (req, res, next) => {
     .escape();
 
   try {
-    const user = new User({
+    const user = await new User({
       username: req.body.username,
       password:
         req.body.password.length > 0
           ? bcrypt.hashSync(req.body.password, 10)
           : req.body.password,
       email: req.body.email,
-    });
-    const result = await user.save();
+    }).save();
+
+    let token = await new Token({
+      userId: user._id,
+      token: crypto.randomBytes(32).toString('hex'),
+    }).save();
     res.json({ message: 'User created' });
   } catch (err) {
+    const user = user.findByIdAndDelete;
     return res.status(400).json({ error: err });
   }
 });
