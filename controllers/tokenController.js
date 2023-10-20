@@ -1,6 +1,6 @@
 // const sendEmail = require('../utils/email');
 const Token = require('../models/token');
-const { User } = require('../models/user');
+const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const crypto = import('crypto');
 const express = require('express');
@@ -13,12 +13,12 @@ exports.verify = asyncHandler(async (req, res, next) => {
 
     const token = await Token.findOne({
       userId: user._id,
-      token: req.body.token,
+      token: req.params.token,
     });
     if (!token) return res.status(400).send('Invalid link');
 
-    await User.updateOne({ _id: user._id, verified: true });
-    await Token.findByIdAndRemove(token._id);
+    await User.findOneAndUpdate({ _id: user._id }, { validated: true });
+    // await Token.findByIdAndRemove(token._id);
 
     res.send('email verified sucessfully');
   } catch (error) {

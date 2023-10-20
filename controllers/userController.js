@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Token = require('../models/token');
+const sendEmailToUser = require('../utils/sendEmail');
 const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
@@ -33,7 +34,10 @@ exports.signup = asyncHandler(async (req, res, next) => {
     .escape();
 
   try {
-    const user = await new User({
+    let user = await User.findOne({ email: req.body.email });
+    if (user)
+      return res.status(400).send('User with given email already exist!');
+    user = await new User({
       username: req.body.username,
       password:
         req.body.password.length > 0
@@ -42,13 +46,19 @@ exports.signup = asyncHandler(async (req, res, next) => {
       email: req.body.email,
     }).save();
 
+    let tokenId = crypto.randomBytes(32).toString('hex');
+
     let token = await new Token({
       userId: user._id,
-      token: crypto.randomBytes(32).toString('hex'),
+      token: tokenId,
     }).save();
+
+    sendEmailToUser(req.body.email, tokenId, user._id);
+
     res.json({ message: 'User created' });
   } catch (err) {
-    const user = user.findByIdAndDelete;
+    User.findByIdAndDelete(user._id);
+    Token.findByIdAndDelete(token._id);
     return res.status(400).json({ error: err });
   }
 });
