@@ -8,17 +8,6 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const AdminPassword = process.env.ADMIN_PASSWORD;
 
-// TODO IMPLEMENT UNIQUE USERNAME AND EMAIL VALIDATION
-// UsersSchema.path('username').validate(async function (username) {
-//     const user = await this.constructor.findOne({ username });
-//     return !user;
-//   }, 'Username already exists');
-
-//   UsersSchema.path('email').validate(async function (email) {
-//     const user = await this.constructor.findOne({ email });
-//     return !user;
-//   }, 'Email already exists');
-
 exports.signup = asyncHandler(async (req, res, next) => {
   body('username', 'Username must not be empty.')
     .trim()
@@ -93,17 +82,7 @@ exports.signin = asyncHandler(async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT
-    const token = jwt.sign(
-      { id: user._id, username: user.username },
-      config.secret,
-      { expiresIn: '1h' }
-    );
-
-    res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
-
-    // Send the token in the response
-    res.json({ token });
+    res.json({ id: user._id, username: user.username, admin: user.admin });
   } catch (err) {
     res.json({ error: err });
   }

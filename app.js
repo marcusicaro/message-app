@@ -1,4 +1,5 @@
 const express = require('express');
+const User = require('./models/user');
 const app = express();
 const path = require('path');
 const session = require('express-session');
@@ -84,7 +85,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json('there was an error');
+  res.json(err.message);
 });
 
 app.listen(3002, () => console.log('app listening on port 3002!'));
