@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('./models/user');
 const app = express();
 const path = require('path');
+const createError = require('http-errors');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
