@@ -9,23 +9,10 @@ require('dotenv').config();
 const AdminPassword = process.env.ADMIN_PASSWORD;
 
 exports.signup = asyncHandler(async (req, res, next) => {
-  body('username', 'Username must not be empty.')
-    .trim()
-    .isLength({ min: 1 })
-    .escape();
-  body('password', 'Password must not be empty.')
-    .trim()
-    .isLength({ min: 1 })
-    .escape();
-  body('email', 'Email must not be empty.')
-    .trim()
-    .isLength({ min: 1 })
-    .escape();
-
   try {
     let user = await User.findOne({ email: req.body.email });
     if (user)
-      return res.status(400).send('User with given email already exist!');
+      return res.status(400).json({ error: 'Email already registered' });
     user = await new User({
       username: req.body.username,
       password:
@@ -72,14 +59,15 @@ exports.forgot_password = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
     let tokenId = crypto.randomBytes(32).toString('hex');
 
-    let token = await new Token({
+    await Token.deleteMany({ userId: user._id });
+    await new Token({
       userId: user._id,
       token: tokenId,
     }).save();
 
-    sendEmailToUser(req.body.email, tokenId, user._id);
+    sendEmailToUser(req.body.email, tokenId, user._id, 'recovery');
 
-    res.send('Email sent');
+    res.json({ message: 'Email sent' });
   } catch (err) {
     return res.status(400).json({ error: err });
   }
@@ -87,9 +75,26 @@ exports.forgot_password = asyncHandler(async (req, res, next) => {
 
 exports.change_password = asyncHandler(async (req, res, next) => {
   try {
-    await User.findByIdAndUpdate(req.param.id, {
+    if (req.isAuthenticated()) {
+      await User.findByIdAndUpdate(req.params.id, {
+        password: bcrypt.hashSync(req.body.password, 10),
+      });
+      return res.json({ message: 'Password changed' });
+    }
+    if (req.body.password.length < 4)
+      return res
+        .status(400)
+        .json({ error: 'Password must be at least 4 characters long' });
+    let token = await Token.findOne({
+      token: req.params.token,
+      userId: req.params.id,
+    });
+    if (!token) return res.status(400).json({ error: 'Token expired' });
+    await User.findByIdAndUpdate(req.params.id, {
       password: bcrypt.hashSync(req.body.password, 10),
     });
+    await Token.findByIdAndDelete(token._id);
+    return res.json({ message: 'Password changed' });
   } catch (err) {
     return res.status(400).json({ error: err });
   }

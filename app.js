@@ -25,7 +25,7 @@ app.use(
     secret: SessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true },
+    cookie: { secure: true, maxAge: 60000, httpOnly: true },
   })
 );
 
