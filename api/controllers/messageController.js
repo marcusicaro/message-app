@@ -5,11 +5,24 @@ const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 
 exports.get_all = asyncHandler(async (req, res, next) => {
-  const allMessages = await Message.find({})
-    .sort({ timestamp: 1 })
-    .populate('user')
-    .exec();
-  res.json({ messages: allMessages });
+  // Check if the user is logged in
+  console.log(req.session);
+  if (!req.user) {
+    res.sendStatus(401);
+    return;
+  } else {
+    console.log(req.user);
+    return res.json({ message: 'User signed in' });
+  }
+
+  // Check if the user's role is allowed to access the `/message` route
+
+  // next();
+  // const allMessages = await Message.find({})
+  //   .sort({ timestamp: 1 })
+  //   .populate('user')
+  //   .exec();
+  // res.json({ messages: allMessages });
 });
 
 // exports.create = asyncHandler(async (req, res, next) => {

@@ -25,20 +25,22 @@ app.use(
     secret: SessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, maxAge: 60000, httpOnly: true },
+    cookie: { secure: false, maxAge: 60000, httpOnly: true },
   })
 );
 
-app.use(passport.session());
+app.use(passport.authenticate('session'));
 
 // determines what to be stored locally, if I include images, should be here also to reduce queries on the db
 passport.serializeUser(function (user, done) {
-  done(null, { id: user.id, username: user.username });
+  // console.log('id: ', user._id);
+  done(null, user._id);
 });
 
-passport.deserializeUser(function (user, cb) {
+passport.deserializeUser(function (id, cb) {
+  // console.log('id is: ', id);
   process.nextTick(function () {
-    return cb(null, user);
+    return cb(null, User.findById(id));
   });
 });
 

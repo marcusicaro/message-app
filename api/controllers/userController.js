@@ -39,8 +39,16 @@ exports.signup = asyncHandler(async (req, res, next) => {
 
 exports.signin = asyncHandler(async (req, res, next) => {
   try {
-    res.json({ message: 'User signed in' });
+    const sessionId = crypto.randomBytes(16).toString('hex');
+    console.log(req.session);
+    // console.log(sessionId);
+    // res.cookie('sessionId', sessionId, {
+    //   maxAge: 60 * 60 * 1000, // 1 hour
+    //   httpOnly: true, // Prevent JavaScript from accessing the cookie
+    // });
+    return res.json({ message: 'User signed in' });
   } catch (err) {
+    console.log(err);
     res.json({ error: err });
   }
 });
