@@ -1,12 +1,12 @@
 const Message = require('../models/message');
 // const Post = require('../models/post');
-// const User = require('../models/user');
+const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 
 exports.get_all = asyncHandler(async (req, res, next) => {
   // Check if the user is logged in
-  console.log(req.session);
+  // console.log(req.session);
   if (!req.user) {
     res.sendStatus(401);
     return;
@@ -25,28 +25,22 @@ exports.get_all = asyncHandler(async (req, res, next) => {
   // res.json({ messages: allMessages });
 });
 
-// exports.create = asyncHandler(async (req, res, next) => {
-//   body('title', 'Title must not be empty.')
-//     .trim()
-//     .isLength({ min: 1 })
-//     .escape();
-//   body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape();
-//   try {
-//     const post = await Post.findById(req.params.postId);
-//     const user = await User.findById(req.userId).exec();
-//     const comment = new Comment({
-//       title: req.body.title,
-//       timestamp: new Date(),
-//       user: user,
-//       text: req.body.text,
-//       post: post,
-//     });
-//     await comment.save();
-//     res.json({ message: 'Comment created' });
-//   } catch (err) {
-//     return res.status(400).json({ error: err });
-//   }
-// });
+exports.create = asyncHandler(async (req, res, next) => {
+  body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape();
+  try {
+    const message = new Message({
+      timestamp: new Date(),
+      sender: await User.findById(req.user._id),
+      text: req.body.text,
+      recipients: [{ user: req.user }],
+    });
+    await message.save();
+    res.json({ message: 'Message created' });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err });
+  }
+});
 
 // exports.get_all_comments_on_a_specific_post = asyncHandler(
 //   async (req, res, next) => {

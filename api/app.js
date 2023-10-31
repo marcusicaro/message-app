@@ -34,13 +34,13 @@ app.use(passport.authenticate('session'));
 // determines what to be stored locally, if I include images, should be here also to reduce queries on the db
 passport.serializeUser(function (user, done) {
   // console.log('id: ', user._id);
-  done(null, user._id);
+  done(null, user);
 });
 
-passport.deserializeUser(function (id, cb) {
+passport.deserializeUser(function (user, cb) {
   // console.log('id is: ', id);
   process.nextTick(function () {
-    return cb(null, User.findById(id));
+    return cb(null, user);
   });
 });
 
