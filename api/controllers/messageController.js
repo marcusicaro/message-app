@@ -4,41 +4,56 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 
-exports.get_all = asyncHandler(async (req, res, next) => {
-  // Check if the user is logged in
-  // console.log(req.session);
+exports.get = asyncHandler(async (req, res, next) => {
   if (!req.user) {
     res.sendStatus(401);
     return;
   } else {
-    console.log(req.user);
-    return res.json({ message: 'User signed in' });
+    const receiverType = req.params.receiverType;
+    const receiverId = req.params.receiverId;
+    const senderId = req.params.senderId;
+    if (receiverType === 'user') {
+      const messages = await Message.find({
+        sender: senderId,
+        recipients: { user: receiverId },
+      })
+        .sort({ timestamp: 1 })
+        .populate('sender')
+        .populate('recipients.user');
+      return res.json({ messages: messages });
+    } else if (receiverType === 'group') {
+      const messages = await Message.find({
+        sender: senderId,
+        recipients: { group: receiverId },
+      })
+        .sort({ timestamp: 1 })
+        .populate('sender')
+        .populate('recipients.group');
+      return res.json({ messages: messages });
+    }
   }
-
-  // Check if the user's role is allowed to access the `/message` route
-
-  // next();
-  // const allMessages = await Message.find({})
-  //   .sort({ timestamp: 1 })
-  //   .populate('user')
-  //   .exec();
-  // res.json({ messages: allMessages });
 });
 
 exports.create = asyncHandler(async (req, res, next) => {
   body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape();
-  try {
-    const message = new Message({
-      timestamp: new Date(),
-      sender: await User.findById(req.user._id),
-      text: req.body.text,
-      recipients: [{ user: req.user }],
-    });
-    await message.save();
-    res.json({ message: 'Message created' });
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({ error: err });
+  const message = new Message({
+    timestamp: new Date(),
+    sender: await User.findById(req.user._id),
+    text: req.body.text,
+    recipients: [{ user: req.user }],
+  });
+  await message.save();
+  res.json({ message: 'Message created' });
+});
+
+exports.delete = asyncHandler(async (req, res, next) => {
+  const message = await Message.findById(req.params.messageId);
+  const user = await User.findById(req.user._id);
+  if (user.admin === true || req.user._id === message.user._id) {
+    await Message.findByIdAndDelete(req.params.messageId);
+    res.json({ message: 'Message deleted' });
+  } else {
+    res.json({ error: 'You are not authorized to delete this message' });
   }
 });
 

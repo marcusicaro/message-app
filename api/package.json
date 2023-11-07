@@ -24,6 +24,7 @@
     "morgan": "~1.9.1",
     "nodemailer": "^6.9.6",
     "passport": "^0.6.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "resend": "^2.0.0"
   }
 }
