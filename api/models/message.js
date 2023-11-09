@@ -6,6 +6,7 @@ const MessagesSchema = new Schema({
   text: { type: String, required: true },
   timestamp: { type: Date, required: true },
   sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  isGroupMessage: { type: Boolean, required: true },
   recipients: [
     {
       user: {

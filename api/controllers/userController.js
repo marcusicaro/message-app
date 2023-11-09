@@ -18,7 +18,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
       password:
         req.body.password.length > 0
           ? bcrypt.hashSync(req.body.password, 10)
-          : req.body.password,
+          : null,
       email: req.body.email,
     }).save();
 
@@ -40,12 +40,6 @@ exports.signup = asyncHandler(async (req, res, next) => {
 exports.signin = asyncHandler(async (req, res, next) => {
   try {
     const sessionId = crypto.randomBytes(16).toString('hex');
-    // console.log(req.session);
-    // console.log(sessionId);
-    // res.cookie('sessionId', sessionId, {
-    //   maxAge: 60 * 60 * 1000, // 1 hour
-    //   httpOnly: true, // Prevent JavaScript from accessing the cookie
-    // });
     return res.json({ message: 'User signed in' });
   } catch (err) {
     console.log(err);
