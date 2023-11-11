@@ -90,7 +90,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json(err.message);
+  res.json({error: err.message});
 });
 
 app.listen(3002, () => console.log('app listening on port 3002!'));
