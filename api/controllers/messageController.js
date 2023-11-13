@@ -17,6 +17,7 @@ exports.get = asyncHandler(async (req, res, next) => {
 exports.create = asyncHandler(async (req, res, next) => {
   body('text', 'Text must not be empty.').trim().notEmpty().escape();
   body('recipient', 'Recipient must not be empty.').trim().notEmpty().escape();
+
   const message = new Message({
     timestamp: new Date(),
     sender: await User.findById(req.user._id),

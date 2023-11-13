@@ -21,19 +21,13 @@ exports.create = asyncHandler(async (req, res, next) => {
 });
 
 exports.add_member = asyncHandler(async (req, res, next) => {
-  if (req.user) {
-    const group = await Group.findById(req.params.groupId);
-    const user = await User.findOne({ username: req.body.username });
+  const group = await Group.findById(req.params.groupId);
+  const user = await User.findOne({ _id: req.body.userId });
 
-    if (req.user.admin === true || group.admins.includes(req.user)) {
-      group.members.push(user);
-      await group.save();
-      return res.json({ message: 'Member added' });
-    } else {
-      return res
-        .status(401)
-        .json({ error: 'You are not authorized to add members' });
-    }
+  if (req.user.admin === true || group.admins.includes(req.user)) {
+    group.members.push(user);
+    await group.save();
+    return res.json({ message: 'Member added' });
   } else {
     return res
       .status(401)
@@ -41,10 +35,25 @@ exports.add_member = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.change_admin = asyncHandler(async (req, res, next) => {
+  const group = await Group.findById(req.params.groupId);
+  const user = await User.findOne({ _id: req.body.userId });
+
+  if (req.user.admin === true || group.admins.includes(req.user)) {
+    group.admins.push(user);
+    await group.save();
+    return res.json({ message: 'Admin added' });
+  } else {
+    return res
+      .status(401)
+      .json({ error: 'You are not authorized to add admins' });
+  }
+});
+
 exports.remove_member = asyncHandler(async (req, res, next) => {
   if (req.user) {
     const group = await Group.findById(req.params.groupId);
-    const user = await User.findOne({ username: req.params.username });
+    const user = await User.findOne({ _id: req.body.userId });
 
     if (req.user.admin === true || group.admins.includes(req.user)) {
       group.members.pull(user);
