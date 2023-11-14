@@ -1,5 +1,4 @@
 const Group = require('../models/group');
-// const Post = require('../models/post');
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
@@ -51,7 +50,6 @@ exports.change_admin = asyncHandler(async (req, res, next) => {
 });
 
 exports.remove_member = asyncHandler(async (req, res, next) => {
-  if (req.user) {
     const group = await Group.findById(req.params.groupId);
     const user = await User.findOne({ _id: req.body.userId });
 
@@ -63,8 +61,26 @@ exports.remove_member = asyncHandler(async (req, res, next) => {
     return res
       .status(401)
       .json({ error: 'You are not authorized to remove members' });
-  }
 });
+
+exports.change_group_admins = asyncHandler(async (req, res, next) => {
+  const group = await Group.findById(req.params.groupId);
+  const user = await User.findOne({ username: req.body._id });
+  if (req.user.admin === true || group.admins.includes(req.user)) {
+    if(group.admins.includes(user)) {
+      group.admins.push(user);
+      await group.save();
+      return res.json({ message: 'Admin adeed' });
+    } 
+    group.admins.pull(user);
+    await group.save();
+    return res.json({ message: 'Admin adeed' });
+
+  }
+  return res
+    .status(401)
+    .json({ error: 'You are not authorized to remove members' });
+})
 
 exports.delete_group = asyncHandler(async (req, res, next) => {
   if (req.user) {

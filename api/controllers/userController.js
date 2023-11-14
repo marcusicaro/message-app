@@ -57,7 +57,6 @@ exports.signout = asyncHandler(async (req, res, next) => {
 });
 
 exports.forgot_password = asyncHandler(async (req, res, next) => {
-  try {
     const user = await User.findOne({ email: req.body.email });
     let tokenId = crypto.randomBytes(32).toString('hex');
 
@@ -70,13 +69,10 @@ exports.forgot_password = asyncHandler(async (req, res, next) => {
     sendEmailToUser(req.body.email, tokenId, user._id, 'recovery');
 
     res.json({ message: 'Email sent' });
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
+
 });
 
 exports.change_password = asyncHandler(async (req, res, next) => {
-  try {
     if (req.isAuthenticated()) {
       await User.findByIdAndUpdate(req.params.id, {
         password: bcrypt.hashSync(req.body.password, 10),
@@ -97,50 +93,14 @@ exports.change_password = asyncHandler(async (req, res, next) => {
     });
     await Token.findByIdAndDelete(token._id);
     return res.json({ message: 'Password changed' });
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
+
 });
 
-// some interesting functionalities that in this project don't make sense
-// exports.get_user_admin_status = asyncHandler(async (req, res, next) => {
-//   try {
-//     const user = await User.findById(req.userId).exec();
-//     res.json({ admin: user.admin });
-//   } catch (err) {
-//     return res.status(400).json({ error: err });
-//   }
-// });
-
-// exports.change_user_admin_status = asyncHandler(async (req, res, next) => {
-//   if (req.body.adminPassword === AdminPassword)
-//     try {
-//       const user = await User.findById(req.userId).exec();
-//       User.findByIdAndUpdate(user._id, { admin: !user.admin }).exec();
-//       res.json({ message: 'User admin status changed', valid: true });
-//     } catch (err) {
-//       return res.status(400).json({ error: err });
-//     }
-//   else {
-//     res.status(401).json({ message: 'Wrong admin password' });
-//   }
-// });
-
-// exports.get_login_data = asyncHandler(async (req, res, next) => {
-//   try {
-//     const user = await User.findById(req.body.userId).exec();
-//     res.json({ username: user.username, admin: user.admin });
-//   } catch (err) {
-//     return res.status(400).json({ error: err });
-//   }
-// });
-
-// exports.delete = asyncHandler(async (req, res, next) => {
-//   const user = await User.findById(req.params.id);
-//   if (req.user.admin === true || req.user._id === user._id) {
-//     await User.findByIdAndDelete(req.params.id);
-//     res.json({ message: 'User deleted' });
-//   } else {
-//     res.json({ error: 'You are not authorized to delete this user' });
-//   }
-// });
+exports.friends = asyncHandler(async (req, res, next) => {
+  const friend = User.findById(req.body.id)
+  const user = User.findById(req.user._id)
+  
+  user.friends.push(friend);
+  user.save();
+  res.status(204).json({message: 'User created'})
+});
