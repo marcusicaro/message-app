@@ -8,10 +8,7 @@ export default function ForgotPasswordModal() {
   const [email, setEmail] = useState('');
 
   return (
-    <FormContainer>
-      <h1 className='text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white'>
-        Sign in to your account
-      </h1>
+    <FormContainer title='Send a verification code to your email'>
       <InputField
         onChange={(e) => setEmail(e.target.value)}
         type='email'

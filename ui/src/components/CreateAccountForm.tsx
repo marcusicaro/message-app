@@ -11,10 +11,7 @@ export default function CreateAccountForm() {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
   return (
-    <FormContainer>
-      <h1 className='text-xl mb-6 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white'>
-        Create your account
-      </h1>
+    <FormContainer title='Create your account'>
       <div className='relative z-0 w-full mb-6 group'>
         <InputField
           value={username}
