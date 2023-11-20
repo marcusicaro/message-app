@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import BgHome from '../../components/bg-home.js';
+import BgHome from '../../components/BgHome.js';
 
 export default function MainLayout({ children }: React.PropsWithChildren<{}>) {
   return (

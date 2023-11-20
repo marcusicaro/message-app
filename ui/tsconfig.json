@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/components/bg-home.js"
+    "src/components/BgHome.js",
+    "src/components/button.jsx"
   ],
   "exclude": ["node_modules"]
 }
