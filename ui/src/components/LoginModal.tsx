@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Button from './Button';
 import FormContainer from './FormContainer';
 import InputField from './InputField';
+import Link from 'next/link';
 
 export default function LoginModal() {
   const [login, setLogin] = useState<string>('');
@@ -46,22 +47,22 @@ export default function LoginModal() {
             </label>
           </div>
         </div>
-        <a
+        <Link
           href='#'
           className='text-sm leading-none flex font-medium text-primary-600 hover:underline dark:text-primary-500'
         >
           Forgot password?
-        </a>
+        </Link>
       </div>
       <Button onClick={() => {}} text={'Sign in'} />
       <p className='text-sm font-light text-gray-500 dark:text-gray-400'>
         Don't have an account yet?
-        <a
+        <Link
           href='/create-account'
           className='font-medium text-primary-600 hover:underline dark:text-primary-500'
         >
           Sign up
-        </a>
+        </Link>
       </p>
     </FormContainer>
   );
