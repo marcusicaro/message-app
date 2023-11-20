@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import Button from '@/components/Button';
-import FormContainer from './FormContainer';
-import InputField from '@/components/InputField';
+import Button from '@/components/shared/Button';
+import FormContainer from '@/components/shared/FormContainer';
+import InputField from '@/components/shared/InputField';
 
 export default function CreateAccountForm() {
   const [username, setUsername] = useState<string>('');

@@ -1,8 +1,8 @@
 // LoginModal.jsx
 import React, { useState } from 'react';
-import Button from './Button';
-import FormContainer from './FormContainer';
-import InputField from './InputField';
+import Button from '@/components/shared/Button';
+import FormContainer from '@/components/shared/FormContainer';
+import InputField from '@/components/shared/InputField';
 import Link from 'next/link';
 
 export default function LoginModal() {

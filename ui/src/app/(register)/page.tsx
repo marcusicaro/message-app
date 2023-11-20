@@ -1,5 +1,5 @@
 'use client';
-import LoginModal from '@/components/LoginModal';
+import LoginModal from '@/components/authentication/LoginModal';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 

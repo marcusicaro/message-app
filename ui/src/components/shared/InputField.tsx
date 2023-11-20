@@ -1,4 +1,3 @@
-// InputField.jsx
 import React, { ChangeEvent } from 'react';
 
 interface InputFieldProps {

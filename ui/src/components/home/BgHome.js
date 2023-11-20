@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import chatimePicture from '../../public/chatime.jpg';
+import chatimePicture from '../../../public/chatime.jpg';
 
 export default function BgHome() {
   return (
