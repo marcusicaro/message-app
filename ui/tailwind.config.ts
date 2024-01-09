@@ -19,6 +19,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('responsive-font-sizes'),
+  ],
 };
 export default config;

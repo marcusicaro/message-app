@@ -1,7 +1,21 @@
+'use client'
 import ChatPreview from '@/components/chat/chat-preview';
 import React, { useState } from 'react';
 
+interface ChatPreviewProps {
+  onClick: () => void;
+  name: string;
+  // ...other props
+  selected: boolean;
+}
+
 export default function Page() {
+  const [activeChat, setActiveChat] = useState<string | null>(null);
+
+  const changeActiveChat = (chatName: string) => {
+    setActiveChat(chatName);
+  };
+
   return (
     <div>
       <div className='flex h-full flex-row justify-between bg-white'>
@@ -15,7 +29,12 @@ export default function Page() {
           </div>
 
           <ChatPreview
-            onClick={() => {}}
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              const name = e.currentTarget.getAttribute('data-name') as string;
+              console.log('name: ', name);
+              // changeActiveChat(name);
+            }}
+            data-name='Marquinhos'
             name='Marquinhos'
             lastMessage='Dae man'
             group={false}

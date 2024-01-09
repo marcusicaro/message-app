@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ChatPreview {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   name: string;
   lastMessage: string;
   imgSrc: string;
@@ -13,6 +13,7 @@ interface ChatPreview {
 function ChatPreview(props: ChatPreview): JSX.Element {
   return (
     <div
+    onClick={props.onClick}
       className={
         'flex flex-row py-4 px-2 justify-center items-center border-b-2' +
         (props.selected === true ? ' border-l-4 border-blue-400' : '')
