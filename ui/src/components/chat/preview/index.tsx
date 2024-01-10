@@ -13,6 +13,7 @@ interface ChatPreview {
 function ChatPreview(props: ChatPreview): JSX.Element {
   return (
     <div
+    data-name={props.name}
     onClick={props.onClick}
       className={
         'flex flex-row py-4 px-2 justify-center items-center border-b-2' +
