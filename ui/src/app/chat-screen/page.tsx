@@ -1,7 +1,7 @@
 'use client'
 import ChatPreview from '@/components/chat/preview';
 import React, { useState } from 'react';
-import ChatMessages from '@/components/chat/messages';
+import ChatScreen from '@/components/chat/screen';
 
 interface ChatPreviewProps {
   onClick: () => void;
@@ -59,7 +59,7 @@ export default function Page() {
             selected={false}
           />
         </div>
-        <ChatMessages onClick={() => null} messages={['asd']} sender='asd' />
+        <ChatScreen onClick={() => null} messages={[{text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?", picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600', sender: 'Marcus'}]} />
       </div>
     </div>
   );
