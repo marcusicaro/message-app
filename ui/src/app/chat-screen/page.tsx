@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import ChatPreview from '@/components/chat/preview';
 import React, { useState } from 'react';
 import ChatScreen from '@/components/chat/screen';
@@ -16,7 +16,7 @@ export default function Page() {
   const changeActiveChat = (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
     setActiveChat(name);
-  }
+  };
 
   return (
     <div>
@@ -31,6 +31,7 @@ export default function Page() {
           </div>
 
           <ChatPreview
+            key={1}
             onClick={changeActiveChat}
             data-name='Marquinhos'
             name='Marquinhos'
@@ -40,8 +41,8 @@ export default function Page() {
             selected={false}
           />
           <ChatPreview
-                        onClick={changeActiveChat}
-
+            key={2}
+            onClick={changeActiveChat}
             name='Grupo do Ianzinho'
             lastMessage='Didi du'
             group={true}
@@ -50,8 +51,8 @@ export default function Page() {
             selected={true}
           />
           <ChatPreview
-                        onClick={changeActiveChat}
-
+            key={3}
+            onClick={changeActiveChat}
             name='Marquinhos'
             lastMessage='Dae man'
             group={false}
@@ -59,8 +60,33 @@ export default function Page() {
             selected={false}
           />
         </div>
-        <ChatScreen onClick={() => null} messages={[{text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?", picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600', sender: 'Marcus'},
-      {text: 'oiiii', picture: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', sender: 'NotMarcus'}]} />
+        <ChatScreen
+          onClick={() => null}
+          messages={[
+            {
+              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
+              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
+              sender: 'NotMarcus',
+            },
+            {
+              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
+              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
+              sender: 'NotMarcus',
+            },
+            {
+              text: 'oiiii',
+              picture:
+                'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+              sender: 'Marcus',
+            },
+            {
+              text: 'oiiii',
+              picture:
+                'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+              sender: 'Marcus',
+            },
+          ]}
+        />
       </div>
     </div>
   );

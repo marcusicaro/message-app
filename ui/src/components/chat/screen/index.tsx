@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ChatScreenMessage, { Message } from './message';
 
 interface ChatScreen {
@@ -8,12 +8,17 @@ interface ChatScreen {
 }
 
 function ChatScreen(props: ChatScreen): JSX.Element {
+  const prevSenderRef = useRef<string | null>(null);
     return (
       <div className='w-full px-5 flex flex-col justify-between'>
       <div className='flex flex-col mt-5'>
         {props.messages.map((message) => {
+          const isSameSender = prevSenderRef.current === message.sender;
+          prevSenderRef.current = message.sender;
           return (
-            <ChatScreenMessage text={message.text} sender={message.sender} picture={message.picture} />
+            <ChatScreenMessage 
+            showPicture={isSameSender} 
+            text={message.text} sender={message.sender} picture={message.picture} />
           )
         })}
       </div>
