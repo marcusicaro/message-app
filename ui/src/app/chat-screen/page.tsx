@@ -85,6 +85,16 @@ export default function Page() {
                 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
               sender: 'Marcus',
             },
+            {
+              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
+              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
+              sender: 'NotMarcus',
+            },
+            {
+              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
+              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
+              sender: 'NotMarcus',
+            },
           ]}
         />
       </div>
