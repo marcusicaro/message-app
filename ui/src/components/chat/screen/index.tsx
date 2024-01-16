@@ -13,7 +13,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
   const groupedMessages:any = [];
 
   function isSameSender(message: Message, index: number) {
-    return index === 0 || prevSenderRef.current === message.sender;
+    return prevSenderRef.current === message.sender;
   }
  
   props.messages.forEach((message, index) => {
@@ -35,6 +35,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
                 return (
                  <ChatScreenMessage 
                    key={id}
+                   showPicture={isSameSender(message, index)}
                    text={message.text} 
                    sender={message.sender} 
                    picture={message.picture} 

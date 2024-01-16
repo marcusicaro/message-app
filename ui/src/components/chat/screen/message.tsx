@@ -18,6 +18,9 @@ export default function ChatScreenMessage(props: Message): JSX.Element {
             {activeUser.name === props.sender && <div className={`ml-2 py-3 px-4 ${activeUser.name === props.sender ? "bg-gray-400" : "bg-blue-400"} rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white`}>
                 {props.text}
             </div>}
+            {activeUser.name !== props.sender && <div className={`ml-2 py-3 px-4 ${activeUser.name === props.sender ? "bg-gray-400" : "bg-blue-400"} rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white`}>
+                {props.text}
+            </div>}
             {(activeUser.name !== props.sender && props.showPicture) &&
             <div className="flex-none flex items-end">
                 <img
@@ -27,9 +30,7 @@ export default function ChatScreenMessage(props: Message): JSX.Element {
             />
             </div>
             }
-            {activeUser.name !== props.sender && <div className={`ml-2 py-3 px-4 ${activeUser.name === props.sender ? "bg-gray-400" : "bg-blue-400"} rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white`}>
-                {props.text}
-            </div>}
+
         </div>
     );
 }
