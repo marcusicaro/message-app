@@ -8,11 +8,10 @@ interface ChatScreen {
 }
 
 function ChatScreen(props: ChatScreen): JSX.Element {
-  const id = useId();
   const prevSenderRef = useRef<string | null>(null);
   const groupedMessages:any = [];
 
-  function isSameSender(message: Message, index: number) {
+  function isSameSender(message: Message) {
     return prevSenderRef.current === message.sender;
   }
  
@@ -20,8 +19,10 @@ function ChatScreen(props: ChatScreen): JSX.Element {
     if (index === 0 || prevSenderRef.current !== message.sender) {
       groupedMessages.push([message]);
       prevSenderRef.current = message.sender;
+
     } else {
       groupedMessages[groupedMessages.length - 1].push(message);
+      prevSenderRef.current = message.sender;
     }
   });
  
@@ -34,8 +35,8 @@ function ChatScreen(props: ChatScreen): JSX.Element {
               {group.map((message:any) => {
                 return (
                  <ChatScreenMessage 
-                   key={id}
-                   showPicture={isSameSender(message, index)}
+                   key={useId()}
+                   showPicture={isSameSender(message)}
                    text={message.text} 
                    sender={message.sender} 
                    picture={message.picture} 
