@@ -30,7 +30,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
       <div className='flex flex-col mt-5'>
         {groupedMessages.map((group:any, index:any) => {
           return (
-            <div key={index}>
+            <div className=' [&>.justify-start:last-child>*]:rounded-bl-none [&>.justify-end:last-child>*]:rounded-br-none ' key={index}>
               {group.map((message:any) => {
                 return (
                  <ChatScreenMessage 
