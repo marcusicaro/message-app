@@ -29,9 +29,9 @@ function ChatScreen(props: ChatScreen): JSX.Element {
   return (
     <div className='w-full px-5 flex flex-col justify-between'>
       <div className='flex flex-col mt-5'>
-        {groupedMessages.map((group:any, index:any) => {
+        {groupedMessages.map((group:Array<Message>, index:any) => {
           return (
-            <div className=' [&>.justify-start:last-child>*]:rounded-bl-none [&>.justify-end:last-child>*]:rounded-br-none ' key={index}>
+            <div className=' [&>.justify-start:last-child>*]:rounded-bl-none [&>.justify-start:last-child>*>*]:opacity-100 [&>.justify-end:last-child>*]:rounded-br-none' key={index}>
               {group.map((message:any) => {
                 return (
                  <ChatScreenMessage 

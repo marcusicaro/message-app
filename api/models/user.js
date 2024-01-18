@@ -7,7 +7,8 @@ const UsersSchema = new Schema({
   email: { type: String, required: true },
   validated: { type: Boolean, default: false },
   admin: { type: Boolean, default: false },
-  friends: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }]
+  friends: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
+  profilePicture: { type: String },
 });
 
 UsersSchema.virtual('url').get(function () {
