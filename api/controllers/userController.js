@@ -1,18 +1,19 @@
 const User = require('../models/user');
-const Token = require('../models/token');
 const sendEmailToUser = require('../utils/sendEmail');
 const crypto = require('crypto');
-const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
-const AdminPassword = process.env.ADMIN_PASSWORD;
 
 exports.signup = asyncHandler(async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
     if (user)
       return res.status(400).json({ error: 'Email already registered' });
+
+
+    let tokenId = crypto.randomBytes(32).toString('hex');
+
     user = await new User({
       username: req.body.username,
       password:
@@ -20,17 +21,9 @@ exports.signup = asyncHandler(async (req, res, next) => {
           ? bcrypt.hashSync(req.body.password, 10)
           : null,
       email: req.body.email,
-    }).save();
-
-    let tokenId = crypto.randomBytes(32).toString('hex');
-
-    let token = await new Token({
-      userId: user._id,
       token: tokenId,
     }).save();
-
     sendEmailToUser(req.body.email, tokenId, user._id);
-
     res.send({ message: 'User created' });
   } catch (err) {
     return res.status(400).json({ error: err });
@@ -39,7 +32,6 @@ exports.signup = asyncHandler(async (req, res, next) => {
 
 exports.signin = asyncHandler(async (req, res, next) => {
   try {
-    const sessionId = crypto.randomBytes(16).toString('hex');
     return res.json({ message: 'User signed in' });
   } catch (err) {
     console.log(err);
@@ -83,7 +75,7 @@ exports.change_password = asyncHandler(async (req, res, next) => {
       return res
         .status(400)
         .json({ error: 'Password must be at least 4 characters long' });
-    let token = await Token.findOne({
+    let token = await User.findOne({
       token: req.params.token,
       userId: req.params.id,
     });
@@ -91,7 +83,6 @@ exports.change_password = asyncHandler(async (req, res, next) => {
     await User.findByIdAndUpdate(req.params.id, {
       password: bcrypt.hashSync(req.body.password, 10),
     });
-    await Token.findByIdAndDelete(token._id);
     return res.json({ message: 'Password changed' });
 
 });
@@ -103,4 +94,27 @@ exports.friends = asyncHandler(async (req, res, next) => {
   user.friends.push(friend);
   user.save();
   res.status(204).json({message: 'User created'})
+});
+
+exports.upload_profile_picture = asyncHandler(async (req, res, next) => {
+  req.file
+})
+
+exports.verify = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) return res.status(400).json({ message: 'Invalid link' });
+
+    const token = await User.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token) return res.status(400).json({ message: 'Invalid link' });
+
+    await User.findOneAndUpdate({ _id: user._id }, { validated: true });
+
+    res.json({ message: 'email verified sucessfully' });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 });

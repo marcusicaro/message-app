@@ -9,6 +9,10 @@ const UsersSchema = new Schema({
   admin: { type: Boolean, default: false },
   friends: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
   profilePicture: { type: String },
+  token: {
+    type: String,
+    required: true,
+  },
 });
 
 UsersSchema.virtual('url').get(function () {
