@@ -92,12 +92,15 @@ exports.friends = asyncHandler(async (req, res, next) => {
   const user = User.findById(req.user._id)
   
   user.friends.push(friend);
-  user.save();
+  await user.save();
   res.status(204).json({message: 'User created'})
 });
 
 exports.upload_profile_picture = asyncHandler(async (req, res, next) => {
-  req.file
+  const user = User.findById(req.user._id)
+  user.profilePicture = req.file.path;
+  await user.save();
+  res.status(204).json({message: 'Photo uploaded'})
 })
 
 exports.verify = asyncHandler(async (req, res, next) => {

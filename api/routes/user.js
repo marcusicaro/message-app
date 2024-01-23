@@ -3,8 +3,8 @@ var express = require('express');
 var router = express.Router();
 const passport = require('passport');
 const checkAuthenticated = require('../utils/checkAuthenticated');
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const { upload } = require('../middlewares/multer');
+
 
 router.post('/signup', user.signup);
 router.post('/signin', passport.authenticate('local'), user.signin);
