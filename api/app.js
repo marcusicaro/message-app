@@ -12,7 +12,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const messageRouter = require('./routes/message');
 const userRouter = require('./routes/user');
-const tokenRouter = require('./routes/token');
 const groupRouter = require('./routes/group');
 const { body } = require('express-validator');
 const Schema = mongoose.Schema;
@@ -74,7 +73,6 @@ app.use(bodyParser.json());
 
 app.use('/message', messageRouter);
 app.use('/user', userRouter);
-app.use('/token', tokenRouter);
 app.use('/group', groupRouter);
 
 // catch 404 and forward to error handler
