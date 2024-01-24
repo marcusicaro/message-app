@@ -34,14 +34,14 @@ export default function LoginModal() {
               id='remember'
               aria-describedby='remember'
               type='checkbox'
-              className='w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800'
+              className='w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300'
               required
             />
           </div>
           <div className='ml-1 text-sm flex'>
             <label
               htmlFor='remember'
-              className='text-gray-500 dark:text-gray-300 leading-none'
+              className='text-gray-500 leading-none'
             >
               Remember me
             </label>
@@ -49,17 +49,17 @@ export default function LoginModal() {
         </div>
         <Link
           href='#'
-          className='text-sm leading-none flex font-medium text-primary-600 hover:underline dark:text-primary-500'
+          className='text-sm leading-none flex font-medium text-primary-600 hover:underline'
         >
           Forgot password?
         </Link>
       </div>
       <Button onClick={() => {}} text={'Sign in'} />
-      <p className='text-sm font-light text-gray-500 dark:text-gray-400'>
+      <p className='text-sm font-light text-gray-500'>
         Don't have an account yet?
         <Link
           href='/create-account'
-          className='font-medium text-primary-600 hover:underline dark:text-primary-500'
+          className='font-medium text-primary-600 hover:underline'
         >
           Sign up
         </Link>
