@@ -4,6 +4,7 @@ import Button from '@/components/shared/Button';
 import FormContainer from '@/components/shared/FormContainer';
 import InputField from '@/components/shared/InputField';
 import Link from 'next/link';
+import { RequestMethod, callAPI } from '../http/callAPI';
 
 export default function LoginModal() {
   const [login, setLogin] = useState<string>('');
@@ -13,9 +14,9 @@ export default function LoginModal() {
     <FormContainer title='Sign in to your account'>
       <InputField
         onChange={(e) => setLogin(e.target.value)}
-        type='email'
-        label='Your email'
-        placeholder='name@company.com'
+        type='text'
+        label='Your username'
+        placeholder='username'
         required
         value={login}
       />
@@ -35,7 +36,6 @@ export default function LoginModal() {
               aria-describedby='remember'
               type='checkbox'
               className='w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300'
-              required
             />
           </div>
           <div className='ml-1 text-sm flex'>
@@ -54,7 +54,10 @@ export default function LoginModal() {
           Forgot password?
         </Link>
       </div>
-      <Button onClick={() => {}} text={'Sign in'} />
+      <Button onClick={() => callAPI("http://localhost:3002/user/signin", RequestMethod.POST, (data) => console.log(data), JSON.stringify({
+    "username":login,
+    "password":password
+}))} text={'Sign in'} />
       <p className='text-sm font-light text-gray-500'>
         Don't have an account yet?
         <Link

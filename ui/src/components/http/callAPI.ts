@@ -1,4 +1,4 @@
-enum RequestMethod {
+export enum RequestMethod {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
@@ -8,7 +8,7 @@ enum RequestMethod {
 export const callAPI = async (
   url: string,
   method: RequestMethod,
-  dataHandler: (data: any) => void,
+  dataHandler: <T>(data: any) => T | void,
   body?: string
 ): Promise<void> => {
   if (method === RequestMethod.GET) {
@@ -33,7 +33,7 @@ export const callAPI = async (
 };
 
 
-async function requestHandler(url: string, method: string, dataHandler: (data: any) => void, body?: string) {
+async function requestHandler(url: string, method: string, dataHandler: <T>(data: any) => T | void, body?: string) {
     try {
     const res = await fetch(url, {
         method: method,

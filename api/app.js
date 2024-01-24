@@ -13,10 +13,8 @@ const bcrypt = require('bcryptjs');
 const messageRouter = require('./routes/message');
 const userRouter = require('./routes/user');
 const groupRouter = require('./routes/group');
-const { body } = require('express-validator');
-const Schema = mongoose.Schema;
+var cors = require('cors');
 require('dotenv').config();
-const MongoDBKey = process.env.MONGODB_KEY;
 const SessionSecret = process.env.SESSION_SECRET.split(' ');
 require('./middlewares/mongoConfig');
 
@@ -29,6 +27,7 @@ app.use(
   })
 );
 
+app.use(cors());
 app.use(passport.authenticate('session'));
 
 // determines what to be stored locally, if I include images, should be here also to reduce queries on the db
