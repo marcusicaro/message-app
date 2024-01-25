@@ -1,6 +1,6 @@
 const multer  = require('multer')
 const upload = multer({
-    dest: '../uploads', //multer settings
+    dest: './uploads', //multer settings
     fileFilter: function (req, file, callback) {
         var ext = path.extname(file.originalname);
         if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
