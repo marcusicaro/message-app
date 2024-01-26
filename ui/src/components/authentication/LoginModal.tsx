@@ -1,14 +1,24 @@
 // LoginModal.jsx
-import React, { useState } from 'react';
 import Button from '@/components/shared/Button';
 import FormContainer from '@/components/shared/FormContainer';
 import InputField from '@/components/shared/InputField';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { RequestMethod, callAPI } from '../http/callAPI';
 
 export default function LoginModal() {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const router = useRouter()
+
+  function handleLogin(data: any): void {
+    router.push('/chat-screen')
+  }
+
+  function loginErrorHandler(data: any): void {
+    console.log(data)
+  }
 
   return (
     <FormContainer title='Sign in to your account'>
@@ -54,7 +64,7 @@ export default function LoginModal() {
           Forgot password?
         </Link>
       </div>
-      <Button onClick={() => callAPI("http://localhost:3002/user/signin", RequestMethod.POST, (data) => console.log(data), JSON.stringify({
+      <Button onClick={() => callAPI("http://localhost:3002/user/signin", RequestMethod.POST, (data) => handleLogin(data),(data) => loginErrorHandler(data) ,JSON.stringify({
     "username":login,
     "password":password
 }))} text={'Sign in'} />

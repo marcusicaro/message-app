@@ -8,7 +8,8 @@ export enum RequestMethod {
 export const callAPI = async (
   url: string,
   method: RequestMethod,
-  dataHandler: <T>(data: any) => T | void,
+  dataHandler: (data: any) => void,
+  errorHandler: (error: any) => void,
   body?: string
 ): Promise<void> => {
   if (method === RequestMethod.GET) {
@@ -21,19 +22,19 @@ export const callAPI = async (
     }
   }
   if(method === RequestMethod.POST) {
-        requestHandler(url, 'POST', dataHandler, body);
+        requestHandler(url, 'POST', dataHandler, errorHandler, body);
   }
     if(method === RequestMethod.PUT) {
-        requestHandler(url, 'PUT', dataHandler, body);
+        requestHandler(url, 'PUT', dataHandler, errorHandler, body);
     }
     if(method === RequestMethod.DELETE) {
-        requestHandler(url, 'DELETE', dataHandler, body);
+        requestHandler(url, 'DELETE', dataHandler, errorHandler, body);
     }
 
 };
 
 
-async function requestHandler(url: string, method: string, dataHandler: <T>(data: any) => T | void, body?: string) {
+async function requestHandler(url: string, method: string, dataHandler: (data: any) => void,   errorHandler: (error: any) => void,body?: string) {
     try {
     const res = await fetch(url, {
         method: method,
@@ -42,6 +43,9 @@ async function requestHandler(url: string, method: string, dataHandler: <T>(data
         },
         body: body,
     });
+    if(res.status === 500) {
+      return console.log('error 500');
+    }
     const data = await res.json();
     dataHandler(data);
     } catch (err) {
