@@ -2,7 +2,7 @@ function loggedIn(req, res, next) {
   if (req.user) {
     next();
   } else {
-    res.redirect('/login');
+    res.json({error: 'You must be logged in to access this page'});
   }
 }
 

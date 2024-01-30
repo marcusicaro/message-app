@@ -3,6 +3,12 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 
+// get all groups that a certain member is in
+exports.get_groups = asyncHandler(async (req, res, next) => {
+  const groups = await Group.find({ members: req.user._id });
+  return res.json(groups);
+});
+
 exports.create = asyncHandler(async (req, res, next) => {
   if (req.user) {
     body('title', 'Title must not be empty.')
