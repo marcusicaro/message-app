@@ -41,6 +41,8 @@ async function requestHandler(url: string, method: string, dataHandler: (data: a
         headers: {
         'Content-Type': 'application/json',
         },
+        mode: 'cors',
+        credentials: 'include',
         body: body,
     });
     if(res.status === 500) {
