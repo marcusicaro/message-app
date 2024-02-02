@@ -13,6 +13,7 @@ export default function LoginModal() {
   const router = useRouter()
 
   function handleLogin(data: any): void {
+    console.log(data)
     router.push('/chat-screen')
   }
 

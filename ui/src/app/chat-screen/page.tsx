@@ -1,7 +1,8 @@
 'use client';
 import ChatPreview from '@/components/chat/preview';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatScreen from '@/components/chat/screen';
+import { RequestMethod, callAPI } from '@/components/http/callAPI';
 
 interface ChatPreviewProps {
   onClick: () => void;
@@ -12,6 +13,10 @@ interface ChatPreviewProps {
 
 export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
+
+  useEffect(() => {
+    callAPI('http://localhost:3002/group/', RequestMethod.GET, (data)=> console.log(data), (data) => console.log(data), undefined, 'include')
+  }, [])
 
   const changeActiveChat = (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;

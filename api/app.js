@@ -23,11 +23,11 @@ app.use(
     secret: SessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 60000, httpOnly: true },
+    cookie: { secure: true, maxAge: 60000, httpOnly: true, sameSite: 'lax' },
   })
 );
 
-app.use(cors());
+app.use(cors({origin: ['http://localhost:3000', 'http://localhost:3002'], credentials: true}));
 app.use(passport.authenticate('session'));
 
 // determines what to be stored locally, if I include images, should be here also to reduce queries on the db

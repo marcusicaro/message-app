@@ -1,5 +1,5 @@
 checkAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (req.cookie.sessionID === req.sessionID) {
     return next();
   }
   res.redirect('/user/signin');

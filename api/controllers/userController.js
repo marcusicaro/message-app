@@ -25,7 +25,8 @@ exports.signup = asyncHandler(async (req, res, next) => {
 });
 
 exports.signin = asyncHandler(async (req, res, next) => {
-  return res.json({ message: 'User signed in' });
+  res.cookie('sessionID', req.sessionID, {maxAge: 3600000, httpOnly: true, secure: true, sameSite: 'lax'});
+  return res.json({ sessionID: req.sessionID });
 });
 
 exports.signout = asyncHandler(async (req, res, next) => {

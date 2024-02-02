@@ -10,7 +10,8 @@ export const callAPI = async (
   method: RequestMethod,
   dataHandler: (data: any) => void,
   errorHandler: (error: any) => void,
-  body?: string
+  body?: string,
+  credentials: 'include' | 'omit' = 'omit',
 ): Promise<void> => {
   if (method === RequestMethod.GET) {
     try {
@@ -34,21 +35,22 @@ export const callAPI = async (
 };
 
 
-async function requestHandler(url: string, method: string, dataHandler: (data: any) => void,   errorHandler: (error: any) => void,body?: string) {
+async function requestHandler(url: string, method: string, dataHandler: (data: Promise<any>) => void,   errorHandler: (error: any) => void,body?: string, credentials?: 'include' | 'omit') {
     try {
     const res = await fetch(url, {
         method: method,
         headers: {
         'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: body,
     });
     if(res.status === 500) {
-      return console.log('error 500');
+      return console.log('status code: 500');
     }
     const data = await res.json();
     dataHandler(data);
     } catch (err) {
-    dataHandler(err);
+    errorHandler(err);
     }
 }
