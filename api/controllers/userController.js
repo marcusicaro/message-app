@@ -25,7 +25,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
 });
 
 exports.signin = asyncHandler(async (req, res, next) => {
-  return res.json({ message: 'User signed in' });
+  return res.json({ message: 'User signed in', token: "1" });
 });
 
 exports.signout = asyncHandler(async (req, res, next) => {

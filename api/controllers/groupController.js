@@ -5,8 +5,9 @@ const asyncHandler = require('express-async-handler');
 
 // get all groups that a certain member is in
 exports.get_groups = asyncHandler(async (req, res, next) => {
-  const groups = await Group.find({ members: req.user._id });
-  return res.json(groups);
+  console.log('req.cookies: ', req.cookies);
+  console.log('req.user: ', req.user);
+  return res.json('asdasd');
 });
 
 exports.create = asyncHandler(async (req, res, next) => {

@@ -7,12 +7,14 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { RequestMethod, callAPI } from '../http/callAPI';
 
+
 export default function LoginModal() {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const router = useRouter()
 
   function handleLogin(data: any): void {
+    console.log(data)
     router.push('/chat-screen')
   }
 

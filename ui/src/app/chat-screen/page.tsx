@@ -2,6 +2,8 @@
 import ChatPreview from '@/components/chat/preview';
 import React, { useState } from 'react';
 import ChatScreen from '@/components/chat/screen';
+import { RequestMethod, callAPI } from '@/components/http/callAPI';
+
 
 interface ChatPreviewProps {
   onClick: () => void;
@@ -18,8 +20,20 @@ export default function Page() {
     setActiveChat(name);
   };
 
+  async function handleClick() {
+      await fetch('http://localhost:3002/group/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application'
+        },
+        credentials: 'include',
+      })
+  }
+
+
   return (
     <div>
+      <button onClick={() => handleClick()}> Testabdiiii</button>
       <div className='flex h-full flex-row justify-between bg-white'>
         <div className='flex flex-col w-2/5 border-r-2 overflow-y-auto'>
           <div className='border-b-2 py-4 px-2'>
