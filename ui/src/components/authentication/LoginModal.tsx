@@ -5,21 +5,46 @@ import InputField from '@/components/shared/InputField';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { RequestMethod, callAPI } from '../http/callAPI';
-
 
 export default function LoginModal() {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const router = useRouter()
+  const router = useRouter();
 
-  function handleLogin(data: any): void {
-    console.log(data)
-    router.push('/chat-screen')
+  function handleLoginResponse(data: any): void {
+    console.log(data);
+    router.push('/chat-screen');
   }
 
   function loginErrorHandler(data: any): void {
-    console.log(data)
+    console.log(data);
+  }
+
+  async function handleLogin(): Promise<void> {
+    try {
+      const res = await fetch('http://localhost:3002/user/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({
+          username: login,
+          password: password,
+        }),
+      });
+
+      if (res.status === 500) {
+        return console.log('error 500');
+      }
+
+      const data = await res.json();
+
+      handleLoginResponse(data);
+    } catch (err) {
+      loginErrorHandler(err);
+    }
   }
 
   return (
@@ -51,10 +76,7 @@ export default function LoginModal() {
             />
           </div>
           <div className='ml-1 text-sm flex'>
-            <label
-              htmlFor='remember'
-              className='text-gray-500 leading-none'
-            >
+            <label htmlFor='remember' className='text-gray-500 leading-none'>
               Remember me
             </label>
           </div>
@@ -66,10 +88,12 @@ export default function LoginModal() {
           Forgot password?
         </Link>
       </div>
-      <Button onClick={() => callAPI("http://localhost:3002/user/signin", RequestMethod.POST, (data) => handleLogin(data),(data) => loginErrorHandler(data) ,JSON.stringify({
-    "username":login,
-    "password":password
-}))} text={'Sign in'} />
+      <Button
+        onClick={() =>
+          handleLogin()
+        }
+        text={'Sign in'}
+      />
       <p className='text-sm font-light text-gray-500'>
         Don't have an account yet?
         <Link

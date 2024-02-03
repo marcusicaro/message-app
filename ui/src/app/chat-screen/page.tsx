@@ -1,8 +1,7 @@
 'use client';
 import ChatPreview from '@/components/chat/preview';
-import React, { useState } from 'react';
 import ChatScreen from '@/components/chat/screen';
-import { RequestMethod, callAPI } from '@/components/http/callAPI';
+import React, { useState } from 'react';
 
 
 interface ChatPreviewProps {
@@ -21,13 +20,16 @@ export default function Page() {
   };
 
   async function handleClick() {
-      await fetch('http://localhost:3002/group/', {
+      let res = await fetch('http://localhost:3002/group/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application'
         },
         credentials: 'include',
       })
+
+      let data = await res.json();
+      console.log(data); 
   }
 
 
