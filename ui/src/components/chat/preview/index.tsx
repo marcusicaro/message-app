@@ -28,7 +28,7 @@ function ChatPreview(props: ChatPreview): JSX.Element {
         />
       </div>
       <div className='w-full'>
-        <div className='text-lg font-semibold'>{props.name}</div>
+        <div className='text-lg font-semibold text-black'>{props.name}</div>
         <span className='text-gray-500'>
           {props.group ? props.lastGroupMessager + ': ' : null}
           {props.lastMessage}
