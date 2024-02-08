@@ -1,4 +1,5 @@
 const Message = require('../models/message');
+const Group = require('../models/group');
 // const Post = require('../models/post');
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
@@ -6,11 +7,21 @@ const asyncHandler = require('express-async-handler');
 
 exports.get = asyncHandler(async (req, res, next) => {
   const recipients = req.body.recipients;
-  const messages = await Message.find({
-    sender: req.body._id,
-    group: req.body.group,
-    recipients: recipients,
-  }).sort({ timestamp: 1 });
+  let messages;
+
+  if(recipients.user) {
+  messages = await Message.find({
+      sender: req.params.senderId,
+      "recipients.user": { $in:  recipients.user},
+    }).sort({ timestamp: 1 }).populate('sender');
+  } else {
+    messages = await Message.find({
+      sender: req.params.senderId,
+      "recipients.group": { $in:  recipients.group},
+    }).sort({ timestamp: 1 }).populate('sender');
+  }
+
+
   return res.json({ messages: messages });
 });
 
@@ -25,6 +36,15 @@ exports.create = asyncHandler(async (req, res, next) => {
     isGroupMessage: req.body.isGroupMessage,
     recipients: req.body.recipients,
   });
+
+  if(req.body.isGroupMessage) {
+    const group = await Group.findByIdAndUpdate(
+      req.body.recipients.group,
+      {lastMessage: message},
+      { new: true }
+    );
+  }
+
   await message.save();
   res.json({ message: 'Message created' });
 });

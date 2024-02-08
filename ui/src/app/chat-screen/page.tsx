@@ -13,8 +13,6 @@ interface ChatPreviewProps {
 
 export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
-  const [groupData, setGroupData] = useState<any>(null);
-  const [isGroupLoading, setIsGroupLoading] = useState(false);
 
   const changeActiveChat = (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
@@ -22,56 +20,22 @@ export default function Page() {
     setActiveChat(name);
   };
 
-  function generateChatPreviews(messages: Array<any>): JSX.Element[] {
-    if (messages) {
-      if (messages.length < 1) return [<div> No messages found</div>];
-
-      let a = messages.map((messageData: any, index: number) => {
-        let message = messageData[0];
-        let groupData = messageData[1];
-
-        console.log('group: ', groupData);
-
-        console.log('group.title: ', groupData.group.title);
-
-        return (
-          <ChatPreview
-            key={index}
-            onClick={changeActiveChat}
-            data-name='Marquinhos'
-            name={groupData.group.title}
-            lastMessage={message.text}
-            group={true}
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={index === 0 ? true : false}
-          />
-        );
-      });
-
-      return a;
-    }
-    return [<div> No messages found</div>];
-  }
-
-  async function getLastMessageFromEachGroup(
-    groups: Array<any>
-  ): Promise<Array<any>> {
-    let lastMessages: Array<any> = [];
-    groups.map(async (group: any) => {
-      let res = await fetch(
-        `http://localhost:3002/group/${group._id}/lastMessage`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application',
-          },
-          credentials: 'include',
-        }
+  function generateChatPreviews(data: any) {
+    return data.map((group: any, index: number) => {
+      console.log(group);
+      return (
+        <ChatPreview
+          key={index}
+          onClick={changeActiveChat}
+          name={group.title}
+          lastMessage={group.lastMessage !== null ? group.lastMessage.text: ''}
+          imgSrc={group.imgSrc}
+          group={true}
+          lastGroupMessager={group.lastMessage !== null ? group.lastMessage.sender.username : ''}
+          selected={activeChat === group.name}
+        />
       );
-      let data = await res.json();
-      if (data.length > 0) lastMessages.push([...data, { group: group }]);
     });
-    return lastMessages;
   }
 
   const fetcher = async (url: string) => {
@@ -93,17 +57,17 @@ export default function Page() {
     fetcher
   );
 
-  useEffect(() => {
-    // Set the loading state to true when starting to fetch the data
-    setIsGroupLoading(true);
-    if (!isLoading && !error && data) {
-      getLastMessageFromEachGroup(data).then((lastMessages) => {
-        // Set the loading state to false once the data is fetched
-        setIsGroupLoading(false);
-        setGroupData(lastMessages);
-      });
-    }
-  }, [isLoading, error, data]);
+  // useEffect(() => {
+  //   // Set the loading state to true when starting to fetch the data
+  //   setIsGroupLoading(true);
+  //   if (!isLoading && !error && data) {
+  //     getLastMessageFromEachGroup(data).then((lastMessages) => {
+  //       // Set the loading state to false once the data is fetched
+  //       setIsGroupLoading(false);
+  //       setGroupData(lastMessages);
+  //     });
+  //   }
+  // }, [isLoading, error, data]);
 
   return (
     <div>
@@ -116,15 +80,7 @@ export default function Page() {
               className='py-2 px-2 border-2 border-gray-200 rounded-2xl w-full'
             />
           </div>
-          {isGroupLoading ? (
-            <div>Loading group messages...</div>
-          ) : error ? (
-            <div>Failed to load group messages.</div>
-          ) : isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            groupData && generateChatPreviews(groupData)
-          )}
+          {isLoading ? <div>Loading...</div> : error ? <div>Error</div> : generateChatPreviews(data)}
         </div>
         <ChatScreen
           onClick={() => null}

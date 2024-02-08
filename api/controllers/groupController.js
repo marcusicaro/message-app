@@ -2,10 +2,14 @@ const Group = require('../models/group');
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
+const Message = require('../models/message');
+
 
 // get all groups that a certain member is in
 exports.get_groups = asyncHandler(async (req, res, next) => {
-    const groups = await Group.find({ members: req.user._id });
+    const groups = await Group.find({ members: req.user._id }).populate({path:'lastMessage', populate: {
+      path: 'sender',
+    }});;
     return res.json(groups);
 });
 
@@ -101,3 +105,15 @@ exports.delete_group = asyncHandler(async (req, res, next) => {
     }
   }
 });
+
+exports.get_last_message_on_group = asyncHandler(async (req, res, next) => {
+  const group = await Group.findById(req.params.groupId);
+  const lastMessage = await Message.find({
+    recipients: { 
+      $elemMatch: { 
+          group: group._id 
+      } 
+  } 
+  }).sort({ timestamp: -1 }).limit(1);
+  return res.json(lastMessage);
+})
