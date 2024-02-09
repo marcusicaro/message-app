@@ -13,9 +13,24 @@ interface ChatPreviewProps {
 
 export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
 
-  const changeActiveChat = (e: React.MouseEvent<HTMLDivElement>) => {
+  const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
+    const id = e.currentTarget.getAttribute('data-id') as string;
+
+    let res = await fetch(`http://localhost:3002/group/${name}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application',
+      },
+      body: JSON.stringify({ 
+        recipients: {
+          group: id
+        } 
+      }),
+      credentials: 'include',
+    });
 
     setActiveChat(name);
   };
@@ -25,6 +40,7 @@ export default function Page() {
       console.log(group);
       return (
         <ChatPreview
+          id={group._id}
           key={index}
           onClick={changeActiveChat}
           name={group.title}

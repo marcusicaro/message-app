@@ -2,6 +2,7 @@ import React from 'react';
 
 interface ChatPreview {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  id: string;
   name: string;
   lastMessage: string;
   imgSrc: string;
@@ -13,6 +14,7 @@ interface ChatPreview {
 function ChatPreview(props: ChatPreview): JSX.Element {
   return (
     <div
+    data-id={props.id}
     data-name={props.name}
     onClick={props.onClick}
       className={

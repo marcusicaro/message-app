@@ -6,18 +6,23 @@ const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 
 exports.get = asyncHandler(async (req, res, next) => {
-  const recipients = req.body.recipients;
+  const recipient = req.params.recipientID;
+  const sender = req.query.senderID;
+
+
   let messages;
 
-  if(recipients.user) {
+  if(sender) {
+    let user = await User.findById(sender);
+
+
   messages = await Message.find({
-      sender: req.params.senderId,
-      "recipients.user": { $in:  recipients.user},
+      sender: user,
+      "recipients.user": { $in:  recipient},
     }).sort({ timestamp: 1 }).populate('sender');
   } else {
     messages = await Message.find({
-      sender: req.params.senderId,
-      "recipients.group": { $in:  recipients.group},
+      "recipients.group": { $in:  recipient},
     }).sort({ timestamp: 1 }).populate('sender');
   }
 

@@ -5,7 +5,7 @@ const passport = require('passport');
 const checkAuthenticated = require('../utils/checkAuthenticated');
 
 router.post('/', passport.authenticate('session'), message_controller.create);
-router.get('/:senderId', message_controller.get);
+router.get('/:recipientID', message_controller.get);
 router.delete('/:senderId', message_controller.delete);
 
 module.exports = router;
