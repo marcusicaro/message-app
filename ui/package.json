@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "js-cookie": "^3.0.5",
     "next": "13.5.6",
+    "next-client-cookies": "^1.1.0",
     "react": "^18",
     "react-dom": "^18",
-    "responsive-font-sizes": "^1.0.7"
+    "responsive-font-sizes": "^1.0.7",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "@types/node": "^20",

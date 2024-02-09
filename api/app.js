@@ -22,12 +22,17 @@ app.use(
   session({
     secret: SessionSecret,
     resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, maxAge: 60000, httpOnly: true },
+    saveUninitialized: true,
+    cookie: { secure: false, maxAge: 3600000, httpOnly: false, sameSite: 'lax'},
   })
 );
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'https://localhost:3000', 'http://localhost:3000/chat-screen'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
+}));
 app.use(passport.authenticate('session'));
 
 // determines what to be stored locally, if I include images, should be here also to reduce queries on the db
@@ -81,6 +86,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+  console.log('err: ', err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

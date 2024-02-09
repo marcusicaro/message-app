@@ -2,6 +2,7 @@ import React from 'react';
 
 interface ChatPreview {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  id: string;
   name: string;
   lastMessage: string;
   imgSrc: string;
@@ -13,6 +14,7 @@ interface ChatPreview {
 function ChatPreview(props: ChatPreview): JSX.Element {
   return (
     <div
+    data-id={props.id}
     data-name={props.name}
     onClick={props.onClick}
       className={
@@ -28,7 +30,7 @@ function ChatPreview(props: ChatPreview): JSX.Element {
         />
       </div>
       <div className='w-full'>
-        <div className='text-lg font-semibold'>{props.name}</div>
+        <div className='text-lg font-semibold text-black'>{props.name}</div>
         <span className='text-gray-500'>
           {props.group ? props.lastGroupMessager + ': ' : null}
           {props.lastMessage}

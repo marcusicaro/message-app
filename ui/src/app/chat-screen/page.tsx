@@ -1,7 +1,8 @@
 'use client';
 import ChatPreview from '@/components/chat/preview';
-import React, { useState } from 'react';
 import ChatScreen from '@/components/chat/screen';
+import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 interface ChatPreviewProps {
   onClick: () => void;
@@ -12,11 +13,77 @@ interface ChatPreviewProps {
 
 export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
 
-  const changeActiveChat = (e: React.MouseEvent<HTMLDivElement>) => {
+  const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
+    const id = e.currentTarget.getAttribute('data-id') as string;
+
+    let res = await fetch(`http://localhost:3002/group/${name}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application',
+      },
+      body: JSON.stringify({ 
+        recipients: {
+          group: id
+        } 
+      }),
+      credentials: 'include',
+    });
+
     setActiveChat(name);
   };
+
+  function generateChatPreviews(data: any) {
+    return data.map((group: any, index: number) => {
+      console.log(group);
+      return (
+        <ChatPreview
+          id={group._id}
+          key={index}
+          onClick={changeActiveChat}
+          name={group.title}
+          lastMessage={group.lastMessage !== null ? group.lastMessage.text: ''}
+          imgSrc={group.imgSrc}
+          group={true}
+          lastGroupMessager={group.lastMessage !== null ? group.lastMessage.sender.username : ''}
+          selected={activeChat === group.name}
+        />
+      );
+    });
+  }
+
+  const fetcher = async (url: string) => {
+    let res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application',
+      },
+      credentials: 'include',
+    });
+
+    let data = await res.json();
+
+    return data;
+  };
+
+  const { data, error, isLoading } = useSWR(
+    'http://localhost:3002/group',
+    fetcher
+  );
+
+  // useEffect(() => {
+  //   // Set the loading state to true when starting to fetch the data
+  //   setIsGroupLoading(true);
+  //   if (!isLoading && !error && data) {
+  //     getLastMessageFromEachGroup(data).then((lastMessages) => {
+  //       // Set the loading state to false once the data is fetched
+  //       setIsGroupLoading(false);
+  //       setGroupData(lastMessages);
+  //     });
+  //   }
+  // }, [isLoading, error, data]);
 
   return (
     <div>
@@ -29,36 +96,7 @@ export default function Page() {
               className='py-2 px-2 border-2 border-gray-200 rounded-2xl w-full'
             />
           </div>
-
-          <ChatPreview
-            key={1}
-            onClick={changeActiveChat}
-            data-name='Marquinhos'
-            name='Marquinhos'
-            lastMessage='Dae man'
-            group={false}
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={false}
-          />
-          <ChatPreview
-            key={2}
-            onClick={changeActiveChat}
-            name='Grupo do Ianzinho'
-            lastMessage='Didi du'
-            group={true}
-            lastGroupMessager='Ian'
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={true}
-          />
-          <ChatPreview
-            key={3}
-            onClick={changeActiveChat}
-            name='Marquinhos'
-            lastMessage='Dae man'
-            group={false}
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={false}
-          />
+          {isLoading ? <div>Loading...</div> : error ? <div>Error</div> : generateChatPreviews(data)}
         </div>
         <ChatScreen
           onClick={() => null}
