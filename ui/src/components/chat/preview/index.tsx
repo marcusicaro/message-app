@@ -12,6 +12,7 @@ interface ChatPreview {
 }
 
 function ChatPreview(props: ChatPreview): JSX.Element {
+
   return (
     <div
     data-id={props.id}
@@ -32,8 +33,8 @@ function ChatPreview(props: ChatPreview): JSX.Element {
       <div className='w-full'>
         <div className='text-lg font-semibold text-black'>{props.name}</div>
         <span className='text-gray-500'>
-          {props.group ? props.lastGroupMessager + ': ' : null}
-          {props.lastMessage}
+          {props.group ? props.lastGroupMessager !== '' ? props.lastGroupMessager + ': ' : '' : null}
+          {props.lastGroupMessager !== '' ? props.lastMessage : <i>{props.lastMessage}</i>}
         </span>
       </div>
     </div>

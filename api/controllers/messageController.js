@@ -9,23 +9,24 @@ exports.get = asyncHandler(async (req, res, next) => {
   const recipient = req.params.recipientID;
   const sender = req.query.senderID;
 
-
   let messages;
 
-  if(sender) {
+  if (sender) {
     let user = await User.findById(sender);
 
-
-  messages = await Message.find({
+    messages = await Message.find({
       sender: user,
-      "recipients.user": { $in:  recipient},
-    }).sort({ timestamp: 1 }).populate('sender');
+      'recipients.user': { $in: recipient },
+    })
+      .sort({ timestamp: 1 })
+      .populate('sender');
   } else {
     messages = await Message.find({
-      "recipients.group": { $in:  recipient},
-    }).sort({ timestamp: 1 }).populate('sender');
+      'recipients.group': { $in: recipient },
+    })
+      .sort({ timestamp: 1 })
+      .populate('sender');
   }
-
 
   return res.json({ messages: messages });
 });
@@ -42,10 +43,10 @@ exports.create = asyncHandler(async (req, res, next) => {
     recipients: req.body.recipients,
   });
 
-  if(req.body.isGroupMessage) {
+  if (req.body.isGroupMessage) {
     const group = await Group.findByIdAndUpdate(
       req.body.recipients.group,
-      {lastMessage: message},
+      { lastMessage: message },
       { new: true }
     );
   }

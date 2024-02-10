@@ -32,14 +32,14 @@ function ChatScreen(props: ChatScreen): JSX.Element {
         {groupedMessages.map((group:Array<Message>, index:any) => {
           return (
             <div className=' [&>.justify-start:last-child>*]:rounded-bl-none [&>.justify-start:last-child>*>*]:opacity-100 [&>.justify-end:last-child>*]:rounded-br-none' key={index}>
-              {group.map((message:any) => {
+              {group.map((message:any, index: number) => {
                 return (
                  <ChatScreenMessage 
-                   key={useId()}
+                   key={index}
                    showPicture={isSameSender(message)}
                    text={message.text} 
                    sender={message.sender} 
-                   picture={message.picture} 
+                   picture={message.sender.picture} 
                  />
                 )
               })}
