@@ -80,13 +80,13 @@ exports.friends = asyncHandler(async (req, res, next) => {
 
   user.friends.push(friend);
   await user.save();
-  res.status(204).json({ message: 'User created' });
+  res.status(200).json({ message: 'User created' });
 });
 
 exports.upload_profile_picture = asyncHandler(async (req, res, next) => {
 const user = await User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.path }, { new: true });
   user.profilePicture = req.file.path;
-  res.status(204).json({ message: 'Photo uploaded' });
+  res.status(200).json({ message: 'Photo uploaded' });
 });
 
 exports.verify = asyncHandler(async (req, res, next) => {
