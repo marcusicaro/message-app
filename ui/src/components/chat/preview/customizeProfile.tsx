@@ -14,10 +14,13 @@ export default function Component() {
         </DialogTrigger>
         <DialogContent>
           <div className="flex items-center gap-4">
-            <Avatar className="w-12 h-12 border">
-              <AvatarImage alt="@shadcn" src="/placeholder-user.jpg" />
-              <AvatarFallback>AC</AvatarFallback>
-            </Avatar>
+          <form method="POST" encType="multipart/form-data" action={'http://localhost:3002/user/photos/upload'}>
+            <input type="file" name="avatar" />
+            <Button value={'Upload'} type='submit' className='h-9 w-9 p-1 rounded-full' variant='ghost'>
+              <UserIcon className='h-4 w-4' />
+              <span className='sr-only'>Edit profile</span>
+            </Button>
+          </form>
             <div className="grid gap-1.5">
               <h2 className="text-lg font-bold">Alice Chu</h2>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">alice@example.com</p>

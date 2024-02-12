@@ -84,9 +84,8 @@ exports.friends = asyncHandler(async (req, res, next) => {
 });
 
 exports.upload_profile_picture = asyncHandler(async (req, res, next) => {
-  const user = User.findById(req.user._id);
+const user = await User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.path }, { new: true });
   user.profilePicture = req.file.path;
-  await user.save();
   res.status(204).json({ message: 'Photo uploaded' });
 });
 

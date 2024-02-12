@@ -1,4 +1,6 @@
 const multer  = require('multer')
+const path = require('path');
+
 const upload = multer({
     dest: './uploads', //multer settings
     fileFilter: function (req, file, callback) {
@@ -11,6 +13,6 @@ const upload = multer({
     limits:{
         fileSize: 1024 * 1024
     }
-}).single('profilePicture');
+}).single('avatar');
 
 module.exports = { upload };
