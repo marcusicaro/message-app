@@ -75,7 +75,7 @@ export default function Component() {
                   className='p-3 rounded-full border cursor-pointer border-gray-200 hover:bg-blue-100 dark:border-gray-800'
                   htmlFor='avatar'
                 >
-                  {fileSelected ? <img src={preview!} alt="File preview" /> : state.profilePicture ? <img src={state.profilePicture!} alt='Profile picture' className='h-16 w-16 rounded-full' /> : <UserIcon className='h-6 w-6' />}
+                  {fileSelected ? <img src={preview!} alt="File preview" className='h-16 w-16 rounded-full' /> : state.profilePicture ? <img src={state.profilePicture!} alt='Profile picture' className='h-16 w-16 rounded-full' /> : <UserIcon className='h-6 w-6' />}
                 </Label>
               </div>
               {fileSelected ? (
