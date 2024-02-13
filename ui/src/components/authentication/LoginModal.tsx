@@ -16,7 +16,7 @@ export default function LoginModal() {
   function handleLoginResponse(data: any): void {
   const {profilePicture, username} = data;
 
-    dispatch({ type: 'LOGIN', payload: { profilePicture: profilePicture, username: username } });
+    dispatch({ type: 'LOGIN', payload: { profilePicture: "http://localhost:3002/" + profilePicture, username: username } });
     router.push('/chat-screen');
   }
 
