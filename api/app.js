@@ -78,6 +78,7 @@ app.use(bodyParser.json());
 app.use('/message', messageRouter);
 app.use('/user', userRouter);
 app.use('/group', groupRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

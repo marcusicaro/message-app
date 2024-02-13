@@ -5,14 +5,18 @@ import InputField from '@/components/shared/InputField';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useUser } from '../context/user';
 
 export default function LoginModal() {
+  const { state, dispatch } = useUser();
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const router = useRouter();
 
   function handleLoginResponse(data: any): void {
-    console.log(data);
+  const {profilePicture, username} = data;
+
+    dispatch({ type: 'LOGIN', payload: { profilePicture: profilePicture, username: username } });
     router.push('/chat-screen');
   }
 

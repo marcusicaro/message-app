@@ -9,7 +9,6 @@ import useSWR from 'swr';
 interface ChatPreviewProps {
   onClick: () => void;
   name: string;
-  // ...other props
   selected: boolean;
 }
 
