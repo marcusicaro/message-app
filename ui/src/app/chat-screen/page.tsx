@@ -1,6 +1,7 @@
 'use client';
 import ChatPreview from '@/components/chat/preview';
 import CustomizeProfile from '@/components/chat/preview/customizeProfile';
+import CreateGroup from '@/components/chat/preview/createGroup';
 import ChatScreen from '@/components/chat/screen';
 import { Message } from '@/components/chat/screen/message';
 import React, { useEffect, useState } from 'react';
@@ -88,7 +89,7 @@ export default function Page() {
               className='py-2 px-2 border-2 border-gray-200 rounded-2xl w-full'
             />
           <div className='flex items-center justify-center'>
-
+            <CreateGroup />
             <CustomizeProfile />
           </div>
 
