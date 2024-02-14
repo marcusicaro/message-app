@@ -19,7 +19,7 @@ function ChatPreview(props: ChatPreview): JSX.Element {
     data-name={props.name}
     onClick={props.onClick}
       className={
-        'flex flex-row py-4 px-2 justify-center items-center border-b-2' +
+        'flex flex-row py-4 px-2 justify-center items-center border-b-2 cursor-pointer hover:bg-slate-100' +
         (props.selected === true ? ' border-l-4 border-blue-400' : '')
       }
     >

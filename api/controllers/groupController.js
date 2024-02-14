@@ -117,3 +117,10 @@ exports.get_last_message_on_group = asyncHandler(async (req, res, next) => {
   }).sort({ timestamp: -1 }).limit(1);
   return res.json(lastMessage);
 })
+exports.upload_group_picture = asyncHandler(async (req, res, next) => {
+  const group = await Group.findById(req.params.groupId);
+  if(!group.admins.includes(req.user)) return res.status(401).json({ error: 'You are not authorized to change the group picture' });
+  group.groupPicture = req.file.path;
+  await group.save();
+    res.status(200).json({ groupPicture: req.file.path });
+  });
