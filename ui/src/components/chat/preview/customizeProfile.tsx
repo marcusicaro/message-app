@@ -1,10 +1,9 @@
 'use client';
 import { useUser } from '@/components/context/user';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { FormEvent, useEffect, useState } from 'react';
 
 export default function Component() {
@@ -26,14 +25,13 @@ export default function Component() {
 
       // Handle response if necessary
       const data = await response.json();
-      dispatch({ type: 'LOGIN', payload: { profilePicture: data.profilePicture, username: state.username! } });
+      dispatch({ type: 'LOGIN', payload: { profilePicture: "http://localhost:3002/" + data.profilePicture, username: state.username! } });
+      console.log('data.profilePicture: ', data.profilePicture);
+      setFileSelected(false)
     } catch (error) {
       console.error('Error:', error);
     }
   }
-
-  useEffect(() => {
-  }, [state]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,6 +47,8 @@ export default function Component() {
       setPreview(null);
     }
   };
+
+
 
   return (
     <>
@@ -115,6 +115,7 @@ export default function Component() {
 }
 
 function UserIcon(props: any) {
+
   return (
     <svg
       {...props}
