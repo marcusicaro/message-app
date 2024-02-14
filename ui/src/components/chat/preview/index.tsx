@@ -1,6 +1,5 @@
 import { group } from 'console';
 import React from 'react';
-import { groupSettings } from './groupSettings';
 
 interface ChatPreview {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -39,7 +38,6 @@ function ChatPreview(props: ChatPreview): JSX.Element {
           {props.lastGroupMessager !== '' ? props.lastMessage : <i>{props.lastMessage}</i>}
         </span>
       </div>
-      {props.group ? groupSettings({ groupPicture: props.imgSrc }) : null}
     </div>
   );
 }

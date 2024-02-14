@@ -6,7 +6,6 @@ const GroupsSchema = new Schema({
   title: { type: String, required: true },
   members: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
   admins: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
-  groupPicture: { type: String },
   lastMessage: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Message', // Assuming 'Message' is the name of your message model
