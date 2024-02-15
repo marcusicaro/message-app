@@ -59,6 +59,18 @@ exports.change_admin = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.delete_group = asyncHandler(async (req, res, next) => {
+  const group = await Group.findById(req.params.groupId);
+  if (req.user.admin === true || group.admins.includes(req.user)) {
+    await Group.findByIdAndDelete(req.params.groupId);
+    return res.json({ message: 'Group deleted' });
+  } else {
+    return res
+      .status(401)
+      .json({ error: 'You are not authorized to delete this group' });
+  }
+})
+
 exports.remove_member = asyncHandler(async (req, res, next) => {
     const group = await Group.findById(req.params.groupId);
     const user = await User.findOne({ _id: req.body.userId });
