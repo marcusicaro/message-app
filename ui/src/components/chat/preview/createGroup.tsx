@@ -1,19 +1,17 @@
 'use client';
-import { useUser } from '@/components/context/user';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusIcon } from 'lucide-react';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
+import { mutate } from 'swr';
 
 export default function Component() {
   const [title, setTitle] = useState('');
+  const [open, setOpen] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    console.log('JSON.stringify({ title }): ', JSON.stringify({ title }));
 
     try {
       const response = await fetch('http://localhost:3002/group/create', {
@@ -26,9 +24,9 @@ export default function Component() {
         credentials: 'include',
       });
 
-      // Handle response if necessary
       const data = await response.json();
-      console.log('data: ', data);
+      setOpen(false)
+      mutate('http://localhost:3002/group');
     } catch (error) {
       console.error('Error:', error);
     }
@@ -36,7 +34,7 @@ export default function Component() {
 
   return (
     <>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen} >
         <DialogTrigger asChild>
           <Button className='h-9 w-9 p-1 rounded-full' variant='ghost'>
             <PlusIcon className='mr-1 h-4 w-4' />
