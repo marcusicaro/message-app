@@ -5,6 +5,7 @@ import { mutate } from 'swr';
 import io from 'socket.io-client';
 import { useRouter } from 'next/router';
 import Members from './Member';
+import AddMember from './AddMember';
 
 interface ChatScreen {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -92,9 +93,12 @@ function ChatScreen(props: ChatScreen): JSX.Element {
 
   return (
     <div className='w-full px-5 flex flex-col justify-between'>
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center mt-5'>
         <p className='font-bold'>{props.name}</p>
-        <Members id={props.chatId} />
+        <div className='flex gap-2'>
+          <AddMember id={props.chatId} />
+          <Members id={props.chatId} />
+        </div>
       </div>
 
       <div className='flex flex-1 flex-col mt-5'>

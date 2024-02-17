@@ -45,9 +45,9 @@ export default function Members(props: any) {
       <PopoverContent className='w-72'>
         <div>
           {members.length
-            ? members.map((member: any) => {
+            ? members.map((member: any, index: number) => {
                 return (
-                  <div className='flex items-center space-x-2 p-2'>
+                  <div key={index} className='flex items-center space-x-2 p-2'>
                     <Avatar className='w-8 h-8 border'>
                       <AvatarImage
                         alt={'@' + member.username}

@@ -24,13 +24,6 @@ function ChatPreview(props: ChatPreview): JSX.Element {
         (props.selected === true ? ' border-l-4 border-blue-400' : '')
       }
     >
-      <div className='w-1/4'>
-        <img
-          src={props.imgSrc ? props.imgSrc : 'https://via.placeholder.com/150'}
-          className='object-cover h-12 w-12 rounded-full'
-          alt=''
-        />
-      </div>
       <div className='w-full'>
         <div className='text-lg font-semibold text-black'>{props.name}</div>
         <span className='text-gray-500'>
