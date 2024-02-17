@@ -4,16 +4,17 @@ import { Button } from '@/components/ui/button';
 import { mutate } from 'swr';
 import io from 'socket.io-client';
 import { useRouter } from 'next/router';
+import Members from './Member';
 
 interface ChatScreen {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   messages: Array<Message>;
-  members?: Array<string>;
+  members?: Array<any>;
   chatId: string;
+  name: string;
 }
 
 function ChatScreen(props: ChatScreen): JSX.Element {
-  const [ws, setWs] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>('');
   const prevSenderRef = useRef<string | null>(null);
   const [groupedMessages, setGroupedMessages] = useState(
@@ -91,9 +92,13 @@ function ChatScreen(props: ChatScreen): JSX.Element {
 
   return (
     <div className='w-full px-5 flex flex-col justify-between'>
-      <div className='flex flex-col mt-5'>
+      <div className='flex justify-between items-center'>
+        <p className='font-bold'>{props.name}</p>
+        <Members id={props.chatId} />
+      </div>
+
+      <div className='flex flex-1 flex-col mt-5'>
         {groupedMessages.map((message: Array<Message>, index: any) => {
-          console.log('message: ', message);
           return (
             <div
               className=' [&>.justify-start:last-child>*]:rounded-bl-none [&>.justify-start:last-child>*>*]:opacity-100 [&>.justify-end:last-child>*]:rounded-br-none'

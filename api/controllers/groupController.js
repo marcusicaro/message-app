@@ -4,13 +4,15 @@ const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
 const Message = require('../models/message');
 
-
 // get all groups that a certain member is in
 exports.get_groups = asyncHandler(async (req, res, next) => {
-    const groups = await Group.find({ members: req.user._id }).populate({path:'lastMessage', populate: {
+  const groups = await Group.find({ members: req.user._id }).populate({
+    path: 'lastMessage',
+    populate: {
       path: 'sender',
-    }});;
-    return res.json(groups);
+    },
+  });
+  return res.json(groups);
 });
 
 exports.create = asyncHandler(async (req, res, next) => {
@@ -27,6 +29,14 @@ exports.create = asyncHandler(async (req, res, next) => {
     await group.save();
     return res.json({ message: 'Group created' });
   }
+});
+
+exports.get_members = asyncHandler(async (req, res, next) => {
+  const group = await Group.findById(req.params.groupId).populate(
+    'members',
+    'username profilePicture'
+  );
+  return res.json(group.members);
 });
 
 exports.add_member = asyncHandler(async (req, res, next) => {
@@ -69,40 +79,39 @@ exports.delete_group = asyncHandler(async (req, res, next) => {
       .status(401)
       .json({ error: 'You are not authorized to delete this group' });
   }
-})
+});
 
 exports.remove_member = asyncHandler(async (req, res, next) => {
-    const group = await Group.findById(req.params.groupId);
-    const user = await User.findOne({ _id: req.body.userId });
+  const group = await Group.findById(req.params.groupId);
+  const user = await User.findOne({ _id: req.body.userId });
 
-    if (req.user.admin === true || group.admins.includes(req.user)) {
-      group.members.pull(user);
-      await group.save();
-      return res.json({ message: 'Member removed' });
-    }
-    return res
-      .status(401)
-      .json({ error: 'You are not authorized to remove members' });
+  if (req.user.admin === true || group.admins.includes(req.user)) {
+    group.members.pull(user);
+    await group.save();
+    return res.json({ message: 'Member removed' });
+  }
+  return res
+    .status(401)
+    .json({ error: 'You are not authorized to remove members' });
 });
 
 exports.change_group_admins = asyncHandler(async (req, res, next) => {
   const group = await Group.findById(req.params.groupId);
   const user = await User.findOne({ username: req.body._id });
   if (req.user.admin === true || group.admins.includes(req.user)) {
-    if(group.admins.includes(user)) {
+    if (group.admins.includes(user)) {
       group.admins.push(user);
       await group.save();
       return res.json({ message: 'Admin adeed' });
-    } 
+    }
     group.admins.pull(user);
     await group.save();
     return res.json({ message: 'Admin adeed' });
-
   }
   return res
     .status(401)
     .json({ error: 'You are not authorized to remove members' });
-})
+});
 
 exports.delete_group = asyncHandler(async (req, res, next) => {
   if (req.user) {
@@ -121,11 +130,13 @@ exports.delete_group = asyncHandler(async (req, res, next) => {
 exports.get_last_message_on_group = asyncHandler(async (req, res, next) => {
   const group = await Group.findById(req.params.groupId);
   const lastMessage = await Message.find({
-    recipients: { 
-      $elemMatch: { 
-          group: group._id 
-      } 
-  } 
-  }).sort({ timestamp: -1 }).limit(1);
+    recipients: {
+      $elemMatch: {
+        group: group._id,
+      },
+    },
+  })
+    .sort({ timestamp: -1 })
+    .limit(1);
   return res.json(lastMessage);
-})
+});

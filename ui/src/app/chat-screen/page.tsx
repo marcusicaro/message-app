@@ -17,6 +17,7 @@ export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
+  const [activeChatName, setActiveChatName] = useState<string>('');
 
   const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
@@ -32,6 +33,7 @@ export default function Page() {
       });
 
       let data = await res.json();
+      setActiveChatName(name);
       setActiveChatId(id);
       setChatMessages(data.messages);
       setActiveChat(name);
@@ -113,6 +115,7 @@ export default function Page() {
           )}
         </div>
         <ChatScreen
+          name={activeChatName}
           onClick={() => null}
           messages={chatMessages}
           chatId={activeChatId}
