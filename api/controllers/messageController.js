@@ -19,13 +19,13 @@ exports.get = asyncHandler(async (req, res, next) => {
       'recipients.user': { $in: recipient },
     })
       .sort({ timestamp: 1 })
-      .populate('sender');
+      .populate('sender', '-password');
   } else {
     messages = await Message.find({
       'recipients.group': { $in: recipient },
     })
       .sort({ timestamp: 1 })
-      .populate('sender');
+      .populate('sender', '-password');
   }
 
   return res.json({ messages: messages });
@@ -35,6 +35,8 @@ exports.create = asyncHandler(async (req, res, next) => {
   body('text', 'Text must not be empty.').trim().notEmpty().escape();
   body('recipient', 'Recipient must not be empty.').trim().notEmpty().escape();
 
+  const io = req.io;
+
   const message = new Message({
     timestamp: new Date(),
     sender: await User.findById(req.user._id),
@@ -42,6 +44,8 @@ exports.create = asyncHandler(async (req, res, next) => {
     isGroupMessage: req.body.isGroupMessage,
     recipients: req.body.recipients,
   });
+
+  io.emit('message', message);
 
   if (req.body.isGroupMessage) {
     const group = await Group.findByIdAndUpdate(

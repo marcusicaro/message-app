@@ -16,6 +16,7 @@ interface ChatPreviewProps {
 export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string>('');
 
   const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
@@ -30,15 +31,13 @@ export default function Page() {
         credentials: 'include',
       });
 
-    let data = await res.json();
-    setChatMessages(data.messages);
-    setActiveChat(name);
+      let data = await res.json();
+      setActiveChatId(id);
+      setChatMessages(data.messages);
+      setActiveChat(name);
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
-
-
-
   };
 
   function generateChatPreviews(data: any) {
@@ -49,10 +48,16 @@ export default function Page() {
           key={index}
           onClick={changeActiveChat}
           name={group.title}
-          lastMessage={group.lastMessage !== null ? group.lastMessage.text: 'Type the first message!'}
+          lastMessage={
+            group.lastMessage !== null
+              ? group.lastMessage.text
+              : 'Type the first message!'
+          }
           imgSrc={group.imgSrc}
           group={true}
-          lastGroupMessager={group.lastMessage !== null ? group.lastMessage.sender.username : ''}
+          lastGroupMessager={
+            group.lastMessage !== null ? group.lastMessage.sender.username : ''
+          }
           selected={activeChat === group.name}
         />
       );
@@ -78,6 +83,12 @@ export default function Page() {
     fetcher
   );
 
+  // useEffect(() => {
+  //   if (data && activeChatId === '') {
+  //     setActiveChatId(data[0]._id);
+  //   }
+  // }, [data, activeChatId]);
+
   return (
     <div className='w-full'>
       <div className='flex h-full flex-row justify-between bg-white'>
@@ -88,17 +99,23 @@ export default function Page() {
               placeholder='Search chats...'
               className='py-2 px-2 border-2 border-gray-200 rounded-2xl w-full'
             />
-          <div className='flex items-center justify-center'>
-            <CreateGroup />
-            <CustomizeProfile />
+            <div className='flex items-center justify-center'>
+              <CreateGroup />
+              <CustomizeProfile />
+            </div>
           </div>
-
-          </div>
-          {isLoading ? <div>Loading...</div> : error ? <div>Error</div> : generateChatPreviews(data)}
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : error ? (
+            <div>Error</div>
+          ) : (
+            generateChatPreviews(data)
+          )}
         </div>
         <ChatScreen
           onClick={() => null}
           messages={chatMessages}
+          chatId={activeChatId}
         />
       </div>
     </div>
