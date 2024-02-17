@@ -32,10 +32,18 @@ export default function AddMember(props: any) {
       }
     );
     let data = await res.json();
-
     console.log(data);
-    if (data.message)
+    if (data.message) {
+      toast({
+        title: 'Member added succesfully',
+        description: 'User not found',
+      });
       return mutate('http://localhost:3002/group/' + props.id + '/members');
+    }
+    toast({
+      title: 'There was an error adding a member to the group',
+      description: 'User not found',
+    });
   }
 
   return (

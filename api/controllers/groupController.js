@@ -41,7 +41,7 @@ exports.get_members = asyncHandler(async (req, res, next) => {
 
 exports.add_member = asyncHandler(async (req, res, next) => {
   const group = await Group.findById(req.params.groupId);
-  const user = await User.findOne({ _id: req.body.userId });
+  const user = await User.findOne({ username: req.body.username });
 
   if (req.user.admin === true || group.admins.includes(req.user)) {
     group.members.push(user);

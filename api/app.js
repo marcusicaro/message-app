@@ -6,8 +6,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // replace with your client's origin
-    methods: ['GET', 'POST', 'DELETE'],
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
   },
 });

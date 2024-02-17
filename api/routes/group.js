@@ -20,12 +20,12 @@ router.delete(
   group_controller.delete_group
 );
 router.put(
-  '/:groupId/add_member',
+  '/:groupId/add-member',
   passport.authenticate('session'),
   group_controller.add_member
 );
 router.put(
-  '/:groupId/change_admin',
+  '/:groupId/change-admin',
   passport.authenticate('session'),
   group_controller.change_admin
 );
@@ -33,11 +33,6 @@ router.delete(
   '/:groupId',
   passport.authenticate('session'),
   group_controller.remove_member
-);
-router.get(
-  '/:groupId/lastMessage',
-  passport.authenticate('session'),
-  group_controller.get_last_message_on_group
 );
 
 module.exports = router;
