@@ -51,7 +51,6 @@ function ChatScreen(props: ChatScreen): JSX.Element {
         mode: 'cors',
         body: JSON.stringify({
           text: message,
-          isGroupMessage: true,
           recipients: { group: props.chatId },
         }),
         credentials: 'include',

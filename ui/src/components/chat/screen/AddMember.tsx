@@ -32,7 +32,6 @@ export default function AddMember(props: any) {
       }
     );
     let data = await res.json();
-    console.log(data);
     if (data.message) {
       toast({
         title: 'Member added succesfully',

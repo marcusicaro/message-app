@@ -41,19 +41,16 @@ exports.create = asyncHandler(async (req, res, next) => {
     timestamp: new Date(),
     sender: await User.findById(req.user._id),
     text: req.body.text,
-    isGroupMessage: req.body.isGroupMessage,
     recipients: req.body.recipients,
   });
 
   io.emit('message', message);
 
-  if (req.body.isGroupMessage) {
-    const group = await Group.findByIdAndUpdate(
-      req.body.recipients.group,
-      { lastMessage: message },
-      { new: true }
-    );
-  }
+  await Group.findByIdAndUpdate(
+    req.body.recipients.group,
+    { lastMessage: message },
+    { new: true }
+  );
 
   await message.save();
   res.json({ message: 'Message created' });
