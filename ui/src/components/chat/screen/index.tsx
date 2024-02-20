@@ -55,8 +55,8 @@ function ChatScreen(props: ChatScreen): JSX.Element {
         }),
         credentials: 'include',
       });
-      let data = await res.json();
-      console.log(data);
+      // let data = await res.json();
+      mutate('http://localhost:3002/group');
     } catch (error) {
       console.log('error: ', error);
     }
