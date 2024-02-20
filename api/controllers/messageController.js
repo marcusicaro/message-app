@@ -9,23 +9,24 @@ exports.get = asyncHandler(async (req, res, next) => {
   const recipient = req.params.recipientID;
   const sender = req.query.senderID;
 
-
   let messages;
 
-  if(sender) {
+  if (sender) {
     let user = await User.findById(sender);
 
-
-  messages = await Message.find({
+    messages = await Message.find({
       sender: user,
-      "recipients.user": { $in:  recipient},
-    }).sort({ timestamp: 1 }).populate('sender');
+      'recipients.user': { $in: recipient },
+    })
+      .sort({ timestamp: 1 })
+      .populate('sender', '-password');
   } else {
     messages = await Message.find({
-      "recipients.group": { $in:  recipient},
-    }).sort({ timestamp: 1 }).populate('sender');
+      'recipients.group': { $in: recipient },
+    })
+      .sort({ timestamp: 1 })
+      .populate('sender', '-password');
   }
-
 
   return res.json({ messages: messages });
 });
@@ -34,21 +35,22 @@ exports.create = asyncHandler(async (req, res, next) => {
   body('text', 'Text must not be empty.').trim().notEmpty().escape();
   body('recipient', 'Recipient must not be empty.').trim().notEmpty().escape();
 
+  const io = req.io;
+
   const message = new Message({
     timestamp: new Date(),
     sender: await User.findById(req.user._id),
     text: req.body.text,
-    isGroupMessage: req.body.isGroupMessage,
     recipients: req.body.recipients,
   });
 
-  if(req.body.isGroupMessage) {
-    const group = await Group.findByIdAndUpdate(
-      req.body.recipients.group,
-      {lastMessage: message},
-      { new: true }
-    );
-  }
+  io.emit('message', message);
+
+  await Group.findByIdAndUpdate(
+    req.body.recipients.group,
+    { lastMessage: message },
+    { new: true }
+  );
 
   await message.save();
   res.json({ message: 'Message created' });

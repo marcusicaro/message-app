@@ -25,7 +25,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
 });
 
 exports.signin = asyncHandler(async (req, res, next) => {
-  return res.json({ message: 'User signed in' });
+  return res.json({ username: req.user.username, profilePicture: req.user.profilePicture});
 });
 
 exports.signout = asyncHandler(async (req, res, next) => {
@@ -80,14 +80,13 @@ exports.friends = asyncHandler(async (req, res, next) => {
 
   user.friends.push(friend);
   await user.save();
-  res.status(204).json({ message: 'User created' });
+  res.status(200).json({ message: 'User created' });
 });
 
 exports.upload_profile_picture = asyncHandler(async (req, res, next) => {
-  const user = User.findById(req.user._id);
+const user = await User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.path }, { new: true });
   user.profilePicture = req.file.path;
-  await user.save();
-  res.status(204).json({ message: 'Photo uploaded' });
+  res.status(200).json({ profilePicture: req.file.path });
 });
 
 exports.verify = asyncHandler(async (req, res, next) => {
