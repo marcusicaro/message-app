@@ -30,7 +30,7 @@ export default function Members(props: any) {
   };
 
   const { data, error, isLoading } = useSWR(
-    'http://localhost:3002/group/' + props.id + '/members',
+    props.id ? 'http://localhost:3002/group/' + props.id + '/members' : null,
     fetcher
   );
 

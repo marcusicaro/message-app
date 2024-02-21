@@ -10,10 +10,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import { mutate } from 'swr';
-import { ToastAction } from '@/components/ui/toast';
-import { useToast } from '@/components/ui/use-toast';
 
 export default function AddMember(props: any) {
   const [member, setMember] = useState('');

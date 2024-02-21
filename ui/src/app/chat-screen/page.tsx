@@ -85,11 +85,18 @@ export default function Page() {
     fetcher
   );
 
-  // useEffect(() => {
-  //   if (data && activeChatId === '') {
-  //     setActiveChatId(data[0]._id);
-  //   }
-  // }, [data, activeChatId]);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      changeActiveChat({
+        currentTarget: {
+          getAttribute: (attr: string) => {
+            if (attr === 'data-name') return data[0].title;
+            if (attr === 'data-id') return data[0]._id;
+          },
+        },
+      } as React.MouseEvent<HTMLDivElement>);
+    }
+  }, [data]);
 
   return (
     <div className='w-full'>
