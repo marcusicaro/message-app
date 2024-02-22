@@ -1,11 +1,11 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
-import ChatScreenMessage, { Message } from './message';
 import { Button } from '@/components/ui/button';
-import { mutate } from 'swr';
+import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
-import { useRouter } from 'next/router';
-import Members from './Member';
+import { mutate } from 'swr';
 import AddMember from './AddMember';
+import Members from './Member';
+import ChatScreenMessage, { Message } from './message';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ChatScreen {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -18,6 +18,10 @@ interface ChatScreen {
 function ChatScreen(props: ChatScreen): JSX.Element {
   const [message, setMessage] = useState<string>('');
   const prevSenderRef = useRef<string | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
+  const [scrollBehaviour, setScrollBehaviour] = useState(
+    'auto' as 'auto' | 'smooth'
+  );
   const [groupedMessages, setGroupedMessages] = useState(
     [] as Array<Array<Message> | []>
   );
@@ -56,6 +60,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
         credentials: 'include',
       });
       // let data = await res.json();
+      setMessage('');
       mutate('http://localhost:3002/group');
     } catch (error) {
       console.log('error: ', error);
@@ -90,8 +95,20 @@ function ChatScreen(props: ChatScreen): JSX.Element {
     setGroupedMessages(newGroupedMessages);
   }, [props.messages]);
 
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({
+        behavior: scrollBehaviour,
+        block: 'end',
+        inline: 'start',
+      });
+      if (scrollBehaviour === 'auto') {
+        setScrollBehaviour('smooth');
+      }
+    }
+  }, [groupedMessages]);
   return (
-    <div className='w-full px-5 flex flex-col justify-between'>
+    <div className='w-full h-svh px-5 flex flex-col justify-between'>
       <div className='flex justify-between items-center mt-5'>
         <p className='font-bold'>{props.name}</p>
         <div className='flex gap-2'>
@@ -100,10 +117,11 @@ function ChatScreen(props: ChatScreen): JSX.Element {
         </div>
       </div>
 
-      <div className='flex flex-1 flex-col mt-5'>
+      <ScrollArea className='flex flex-1 flex-col mt-5 max-h-full overflow-y-hidden overflow-x-hidden'>
         {groupedMessages.map((message: Array<Message>, index: any) => {
           return (
             <div
+              ref={index === groupedMessages.length - 1 ? lastMessageRef : null}
               className=' [&>.justify-start:last-child>*]:rounded-bl-none [&>.justify-start:last-child>*>*]:opacity-100 [&>.justify-end:last-child>*]:rounded-br-none'
               key={index}
             >
@@ -121,7 +139,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
             </div>
           );
         })}
-      </div>
+      </ScrollArea>
       <div className='py-5 gap-5 flex items-center'>
         <input
           value={message}

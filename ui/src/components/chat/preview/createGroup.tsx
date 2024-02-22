@@ -25,7 +25,7 @@ export default function Component() {
       });
 
       const data = await response.json();
-      setOpen(false)
+      setOpen(false);
       mutate('http://localhost:3002/group');
     } catch (error) {
       console.error('Error:', error);
@@ -34,7 +34,7 @@ export default function Component() {
 
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen} >
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className='h-9 w-9 p-1 rounded-full' variant='ghost'>
             <PlusIcon className='mr-1 h-4 w-4' />
@@ -42,8 +42,8 @@ export default function Component() {
         </DialogTrigger>
         <DialogContent>
           <form onSubmit={onSubmit}>
-            <div className='flex items-center gap-4'>
-              <div className='grid gap-4'>
+            <div className='flex items-center gap-4 w-full'>
+              <div className='grid gap-4 w-full'>
                 <Label htmlFor='title'></Label>
                 <input
                   value={title}
@@ -56,14 +56,8 @@ export default function Component() {
                 />
               </div>
             </div>
-            <div className='flex justify-end gap-2'>
-              <Button
-                type='submit'
-                className='p-1 mt-4 hover:bg-blue-100'
-                variant='ghost'
-              >
-                Create Group
-              </Button>
+            <div className='flex justify-end gap-2 mt-5'>
+              <Button type='submit'>Create Group</Button>
               <div>
                 <Button variant='outline'>Cancel</Button>
               </div>

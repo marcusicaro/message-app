@@ -99,7 +99,7 @@ export default function Page() {
   }, [data]);
 
   return (
-    <div className='w-full'>
+    <div className='w-full max-h-svh'>
       <div className='flex h-full flex-row justify-between bg-white'>
         <div className='flex flex-col w-2/5 border-r-2 overflow-y-auto'>
           <div className='border-b-2 py-4 px-2 flex gap-2'>
