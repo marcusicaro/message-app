@@ -15,6 +15,7 @@ import { useState } from 'react';
 
 export default function Members(props: any) {
   const [members, setMembers] = useState([]);
+  const [isCurrentUserAdmin, setIsCurrentUserAdmin] = useState(false);
 
   const fetcher = async (url: string) => {
     let res = await fetch(url, {
@@ -26,7 +27,8 @@ export default function Members(props: any) {
     });
 
     let data = await res.json();
-    setMembers(data);
+    setMembers(data.members);
+    setIsCurrentUserAdmin(data.isCurrentUserAdmin);
   };
 
   const { data, error, isLoading } = useSWR(
@@ -60,6 +62,11 @@ export default function Members(props: any) {
                     <div className='text-sm font-medium leading-none'>
                       @{member.username}
                     </div>
+                    {isCurrentUserAdmin && (
+                      <div className='text-sm font-medium leading-none'>
+                        Current user is admin
+                      </div>
+                    )}
                   </div>
                 );
               })

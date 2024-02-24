@@ -9,6 +9,11 @@ router.get(
   passport.authenticate('session'),
   group_controller.get_members
 );
+router.delete(
+  '/:groupId/remove-member',
+  passport.authenticate('session'),
+  group_controller.remove_member
+);
 router.post(
   '/create',
   passport.authenticate('session'),
