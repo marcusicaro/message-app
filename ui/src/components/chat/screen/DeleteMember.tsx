@@ -6,8 +6,7 @@ import { PlusIcon, TrashIcon } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { mutate } from 'swr';
 
-export default function Component(props: any) {
-  const [title, setTitle] = useState('');
+export default function DeleteMember(props: any) {
   const [open, setOpen] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -28,6 +27,7 @@ export default function Component(props: any) {
       );
 
       const data = await response.json();
+      mutate('http://localhost:3002/group/' + props.id + '/members');
       console.log('data: ', data);
     } catch (error) {
       console.error('Error:', error);

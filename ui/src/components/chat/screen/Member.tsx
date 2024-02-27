@@ -12,6 +12,7 @@ import {
 import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import useSWR from 'swr';
 import { useState } from 'react';
+import DeleteMember from './DeleteMember';
 
 export default function Members(props: any) {
   const [members, setMembers] = useState([]);
@@ -51,10 +52,12 @@ export default function Members(props: any) {
                 return (
                   <div key={index} className='flex items-center space-x-2 p-2'>
                     <Avatar className='w-8 h-8 border'>
-                      <AvatarImage
-                        alt={'@' + member.username}
-                        src={'http://localhost:3002/' + member.profilePicture}
-                      />
+                      {member.profilePicture && (
+                        <AvatarImage
+                          alt={'@' + member.username}
+                          src={'http://localhost:3002/' + member.profilePicture}
+                        />
+                      )}
                       <AvatarFallback>
                         {member.username[0].toUpperCase()}
                       </AvatarFallback>
@@ -63,9 +66,7 @@ export default function Members(props: any) {
                       @{member.username}
                     </div>
                     {isCurrentUserAdmin && (
-                      <div className='text-sm font-medium leading-none'>
-                        Current user is admin
-                      </div>
+                      <DeleteMember id={props.id} username={member.username} />
                     )}
                   </div>
                 );
