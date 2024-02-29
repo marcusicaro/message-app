@@ -3,9 +3,9 @@ import ChatPreview from '@/components/chat/preview';
 import CustomizeProfile from '@/components/chat/preview/customizeProfile';
 import CreateGroup from '@/components/chat/preview/createGroup';
 import ChatScreen from '@/components/chat/screen';
-import { Message } from '@/components/chat/screen/message';
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
+import { Message } from '@/lib/types';
 
 interface ChatPreviewProps {
   onClick: () => void;
@@ -85,14 +85,21 @@ export default function Page() {
     fetcher
   );
 
-  // useEffect(() => {
-  //   if (data && activeChatId === '') {
-  //     setActiveChatId(data[0]._id);
-  //   }
-  // }, [data, activeChatId]);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      changeActiveChat({
+        currentTarget: {
+          getAttribute: (attr: string) => {
+            if (attr === 'data-name') return data[0].title;
+            if (attr === 'data-id') return data[0]._id;
+          },
+        },
+      } as React.MouseEvent<HTMLDivElement>);
+    }
+  }, [data]);
 
   return (
-    <div className='w-full'>
+    <div className='w-full max-h-svh'>
       <div className='flex h-full flex-row justify-between bg-white'>
         <div className='flex flex-col w-2/5 border-r-2 overflow-y-auto'>
           <div className='border-b-2 py-4 px-2 flex gap-2'>

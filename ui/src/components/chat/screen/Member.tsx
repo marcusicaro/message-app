@@ -12,25 +12,33 @@ import {
 import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import useSWR from 'swr';
 import { useState } from 'react';
+import DeleteMember from './DeleteMember';
+import { failToast } from '@/lib/toast';
 
 export default function Members(props: any) {
   const [members, setMembers] = useState([]);
+  const [isCurrentUserAdmin, setIsCurrentUserAdmin] = useState(false);
 
   const fetcher = async (url: string) => {
-    let res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application',
-      },
-      credentials: 'include',
-    });
+    try {
+      let res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application',
+        },
+        credentials: 'include',
+      });
 
-    let data = await res.json();
-    setMembers(data);
+      let data = await res.json();
+      setMembers(data.members);
+      setIsCurrentUserAdmin(data.isCurrentUserAdmin);
+    } catch (error) {
+      failToast('Failed to load members');
+    }
   };
 
   const { data, error, isLoading } = useSWR(
-    'http://localhost:3002/group/' + props.id + '/members',
+    props.id ? 'http://localhost:3002/group/' + props.id + '/members' : null,
     fetcher
   );
 
@@ -49,10 +57,12 @@ export default function Members(props: any) {
                 return (
                   <div key={index} className='flex items-center space-x-2 p-2'>
                     <Avatar className='w-8 h-8 border'>
-                      <AvatarImage
-                        alt={'@' + member.username}
-                        src={'http://localhost:3002/' + member.profilePicture}
-                      />
+                      {member.profilePicture && (
+                        <AvatarImage
+                          alt={'@' + member.username}
+                          src={'http://localhost:3002/' + member.profilePicture}
+                        />
+                      )}
                       <AvatarFallback>
                         {member.username[0].toUpperCase()}
                       </AvatarFallback>
@@ -60,6 +70,9 @@ export default function Members(props: any) {
                     <div className='text-sm font-medium leading-none'>
                       @{member.username}
                     </div>
+                    {isCurrentUserAdmin && (
+                      <DeleteMember id={props.id} username={member.username} />
+                    )}
                   </div>
                 );
               })

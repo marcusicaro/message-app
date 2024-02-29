@@ -32,11 +32,19 @@ exports.create = asyncHandler(async (req, res, next) => {
 });
 
 exports.get_members = asyncHandler(async (req, res, next) => {
-  const group = await Group.findById(req.params.groupId).populate(
-    'members',
-    'username profilePicture'
+  const group = await Group.findById(req.params.groupId)
+    .populate('members', 'username profilePicture')
+    .populate('admins', 'username profilePicture');
+
+  const isCurrentUserAdmin = group.admins.some(
+    (admin) => admin._id.toString() === req.user._id
   );
-  return res.json(group.members);
+
+  return res.json({
+    members: group.members,
+    isCurrentUserAdmin: isCurrentUserAdmin,
+    admins: group.admins,
+  });
 });
 
 exports.add_member = asyncHandler(async (req, res, next) => {
@@ -83,7 +91,7 @@ exports.delete_group = asyncHandler(async (req, res, next) => {
 
 exports.remove_member = asyncHandler(async (req, res, next) => {
   const group = await Group.findById(req.params.groupId);
-  const user = await User.findOne({ _id: req.body.userId });
+  const user = await User.findOne({ username: req.body.username });
 
   if (req.user.admin === true || group.admins.includes(req.user)) {
     group.members.pull(user);

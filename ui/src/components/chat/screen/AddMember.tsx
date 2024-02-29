@@ -10,10 +10,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+import { failToast, successToast } from '@/lib/toast';
 import { useState } from 'react';
 import { mutate } from 'swr';
-import { ToastAction } from '@/components/ui/toast';
-import { useToast } from '@/components/ui/use-toast';
 
 export default function AddMember(props: any) {
   const [member, setMember] = useState('');
@@ -33,16 +33,10 @@ export default function AddMember(props: any) {
     );
     let data = await res.json();
     if (data.message) {
-      toast({
-        title: 'Member added succesfully',
-        description: 'User not found',
-      });
+      successToast('Member added');
       return mutate('http://localhost:3002/group/' + props.id + '/members');
     }
-    toast({
-      title: 'There was an error adding a member to the group',
-      description: 'User not found',
-    });
+    failToast('Failed to add member');
   }
 
   return (

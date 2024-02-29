@@ -18,7 +18,12 @@ export default function RootLayout({
   return (
     <UserProvider>
       <html lang='en'>
-        <body className={inter.className}>{children}</body>
+        <body
+          style={{ maxHeight: '100vh', overflow: 'hidden' }}
+          className={inter.className}
+        >
+          {children}
+        </body>
       </html>
     </UserProvider>
   );
