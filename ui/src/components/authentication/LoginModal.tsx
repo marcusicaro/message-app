@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useUser } from '../context/user';
+import { failToast } from '@/lib/toast';
 
 export default function LoginModal() {
   const { state, dispatch } = useUser();
@@ -14,14 +15,16 @@ export default function LoginModal() {
   const router = useRouter();
 
   function handleLoginResponse(data: any): void {
-  const {profilePicture, username} = data;
+    const { profilePicture, username } = data;
 
-    dispatch({ type: 'LOGIN', payload: { profilePicture: "http://localhost:3002/" + profilePicture, username: username } });
+    dispatch({
+      type: 'LOGIN',
+      payload: {
+        profilePicture: 'http://localhost:3002/' + profilePicture,
+        username: username,
+      },
+    });
     router.push('/chat-screen');
-  }
-
-  function loginErrorHandler(data: any): void {
-    console.log(data);
   }
 
   async function handleLogin(): Promise<void> {
@@ -47,7 +50,7 @@ export default function LoginModal() {
 
       handleLoginResponse(data);
     } catch (err) {
-      loginErrorHandler(err);
+      failToast('Failed to login');
     }
   }
 
@@ -92,12 +95,7 @@ export default function LoginModal() {
           Forgot password?
         </Link>
       </div>
-      <Button
-        onClick={() =>
-          handleLogin()
-        }
-        text={'Sign in'}
-      />
+      <Button onClick={() => handleLogin()} text={'Sign in'} />
       <p className='text-sm font-light text-gray-500'>
         Don't have an account yet?
         <Link

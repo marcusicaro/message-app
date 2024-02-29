@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useToast } from '@/components/ui/use-toast';
+import { failToast, successToast } from '@/lib/toast';
 import { useState } from 'react';
 import { mutate } from 'swr';
 
@@ -32,16 +33,10 @@ export default function AddMember(props: any) {
     );
     let data = await res.json();
     if (data.message) {
-      toast({
-        title: 'Success',
-        description: 'Member added succesfully',
-      });
+      successToast('Member added');
       return mutate('http://localhost:3002/group/' + props.id + '/members');
     }
-    toast({
-      title: 'Failure',
-      description: 'There was an error adding a member to the group',
-    });
+    failToast('Failed to add member');
   }
 
   return (

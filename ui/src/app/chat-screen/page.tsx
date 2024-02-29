@@ -3,9 +3,9 @@ import ChatPreview from '@/components/chat/preview';
 import CustomizeProfile from '@/components/chat/preview/customizeProfile';
 import CreateGroup from '@/components/chat/preview/createGroup';
 import ChatScreen from '@/components/chat/screen';
-import { Message } from '@/components/chat/screen/message';
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
+import { Message } from '@/lib/types';
 
 interface ChatPreviewProps {
   onClick: () => void;

@@ -3,12 +3,48 @@ import React, { useState } from 'react';
 import Button from '@/components/shared/Button';
 import FormContainer from '@/components/shared/FormContainer';
 import InputField from '@/components/shared/InputField';
+import { failToast, successToast } from '@/lib/toast';
 
 export default function CreateAccountForm() {
   const [username, setUsername] = useState<string>('');
-  const [login, setLogin] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+
+  async function createAccount() {
+    if (password !== confirmPassword) {
+      return failToast('Passwords do not match');
+    }
+
+    try {
+      const res = await fetch('http://localhost:3002/user/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+
+      if (res.status === 500) {
+        return failToast('error 500');
+      }
+      const data = await res.json();
+
+      if (data.email) {
+        successToast('Account created, check your email to verify');
+        return;
+      }
+      successToast('Account created');
+    } catch (err) {
+      failToast('Failed to create account');
+    }
+  }
 
   return (
     <FormContainer title='Create your account'>
@@ -23,11 +59,11 @@ export default function CreateAccountForm() {
       </div>
       <div className='relative z-0 w-full mb-6 group'>
         <InputField
-          value={login}
+          value={email}
           label='Email address'
           type='email'
           placeholder=''
-          onChange={(e) => setLogin(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className='relative z-0 w-full mb-6 group'>
@@ -48,7 +84,7 @@ export default function CreateAccountForm() {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
       </div>
-      <Button onClick={() => {}} text={'Submit'} />
+      <Button onClick={createAccount} text={'Submit'} />
     </FormContainer>
   );
 }

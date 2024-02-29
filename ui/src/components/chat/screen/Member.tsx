@@ -13,23 +13,28 @@ import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import useSWR from 'swr';
 import { useState } from 'react';
 import DeleteMember from './DeleteMember';
+import { failToast } from '@/lib/toast';
 
 export default function Members(props: any) {
   const [members, setMembers] = useState([]);
   const [isCurrentUserAdmin, setIsCurrentUserAdmin] = useState(false);
 
   const fetcher = async (url: string) => {
-    let res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application',
-      },
-      credentials: 'include',
-    });
+    try {
+      let res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application',
+        },
+        credentials: 'include',
+      });
 
-    let data = await res.json();
-    setMembers(data.members);
-    setIsCurrentUserAdmin(data.isCurrentUserAdmin);
+      let data = await res.json();
+      setMembers(data.members);
+      setIsCurrentUserAdmin(data.isCurrentUserAdmin);
+    } catch (error) {
+      failToast('Failed to load members');
+    }
   };
 
   const { data, error, isLoading } = useSWR(

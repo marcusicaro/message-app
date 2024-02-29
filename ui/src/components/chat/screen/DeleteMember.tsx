@@ -2,6 +2,8 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { failToast, successToast } from '@/lib/toast';
+import { fail } from 'assert';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { mutate } from 'swr';
@@ -28,9 +30,9 @@ export default function DeleteMember(props: any) {
 
       const data = await response.json();
       mutate('http://localhost:3002/group/' + props.id + '/members');
-      console.log('data: ', data);
+      successToast('Member removed');
     } catch (error) {
-      console.error('Error:', error);
+      failToast('Failed to remove member');
     }
   }
 

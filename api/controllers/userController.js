@@ -20,12 +20,39 @@ exports.signup = asyncHandler(async (req, res, next) => {
     email: req.body.email,
     token: tokenId,
   }).save();
-  sendEmailToUser(req.body.email, tokenId, user._id);
-  res.send({ message: 'User created' });
+
+  try {
+    await sendEmailToUser(req.body.email, tokenId, req.body.username);
+    return res.json({
+      message: 'User created and validation email has been sent',
+      email: true,
+    });
+  } catch (error) {
+    console.log('error: ', error);
+    User.findOneAndDelete({ email: req.body.email });
+    user = await new User({
+      username: req.body.username,
+      password:
+        req.body.password.length > 0
+          ? bcrypt.hashSync(req.body.password, 10)
+          : null,
+      email: req.body.email,
+      token: tokenId,
+      validated: true,
+    }).save();
+
+    return res.json({
+      message: 'User created, but email not sent',
+      email: false,
+    });
+  }
 });
 
 exports.signin = asyncHandler(async (req, res, next) => {
-  return res.json({ username: req.user.username, profilePicture: req.user.profilePicture});
+  return res.json({
+    username: req.user.username,
+    profilePicture: req.user.profilePicture,
+  });
 });
 
 exports.signout = asyncHandler(async (req, res, next) => {
@@ -84,22 +111,25 @@ exports.friends = asyncHandler(async (req, res, next) => {
 });
 
 exports.upload_profile_picture = asyncHandler(async (req, res, next) => {
-const user = await User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.path }, { new: true });
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { profilePicture: req.file.path },
+    { new: true }
+  );
   user.profilePicture = req.file.path;
   res.status(200).json({ profilePicture: req.file.path });
 });
 
 exports.verify = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ _id: req.params.id });
-  if (!user) return res.status(400).json({ message: 'Invalid link' });
-
-  const token = await User.findOne({
-    userId: user._id,
+  let username = req.params.username;
+  const user = await User.findOne({
+    username,
     token: req.params.token,
   });
-  if (!token) return res.status(400).json({ message: 'Invalid link' });
 
-  await User.findOneAndUpdate({ _id: user._id }, { validated: true });
+  if (!user) return res.status(400).json({ message: 'Invalid link' });
+
+  await User.findOneAndUpdate({ username }, { validated: true });
 
   res.json({ message: 'email verified sucessfully' });
 });
