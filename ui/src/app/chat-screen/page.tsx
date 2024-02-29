@@ -6,6 +6,7 @@ import ChatScreen from '@/components/chat/screen';
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Message } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 interface ChatPreviewProps {
   onClick: () => void;
@@ -18,6 +19,7 @@ export default function Page() {
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [activeChatName, setActiveChatName] = useState<string>('');
+  const router = useRouter();
 
   const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
@@ -43,27 +45,32 @@ export default function Page() {
   };
 
   function generateChatPreviews(data: any) {
-    return data.map((group: any, index: number) => {
-      return (
-        <ChatPreview
-          id={group._id}
-          key={index}
-          onClick={changeActiveChat}
-          name={group.title}
-          lastMessage={
-            group.lastMessage !== null
-              ? group.lastMessage.text
-              : 'Type the first message!'
-          }
-          imgSrc={group.imgSrc}
-          group={true}
-          lastGroupMessager={
-            group.lastMessage !== null ? group.lastMessage.sender.username : ''
-          }
-          selected={activeChat === group.name}
-        />
-      );
-    });
+    if (data.length)
+      return data.map((group: any, index: number) => {
+        return (
+          <ChatPreview
+            id={group._id}
+            key={index}
+            onClick={changeActiveChat}
+            name={group.title}
+            lastMessage={
+              group.lastMessage !== null
+                ? group.lastMessage.text
+                : 'Type the first message!'
+            }
+            imgSrc={group.imgSrc}
+            group={true}
+            lastGroupMessager={
+              group.lastMessage !== null
+                ? group.lastMessage.sender.username
+                : ''
+            }
+            selected={activeChat === group.name}
+          />
+        );
+      });
+
+    return router.push('/');
   }
 
   const fetcher = async (url: string) => {

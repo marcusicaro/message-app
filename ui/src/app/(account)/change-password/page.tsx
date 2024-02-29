@@ -6,12 +6,14 @@ import { failToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function ForgotPasswordModal() {
-  const [email, setEmail] = useState('');
+export default function ChangePasswordPage() {
+  const [password, setPassword] = useState('');
+  const [token, setToken] = useState('');
   const router = useRouter();
-  function handleSendRecoveryLink() {
+
+  async function handleSendRecoveryLink() {
     try {
-      fetch('http://localhost:3002/user/forgot-password', {
+      let response = await fetch('http://localhost:3002/user/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,10 +21,16 @@ export default function ForgotPasswordModal() {
         mode: 'cors',
         credentials: 'include',
         body: JSON.stringify({
-          email,
+          token,
+          password,
         }),
       });
-      router.push('/change-password');
+      const data = await response.json();
+      if (data.error) {
+        failToast(data.error);
+        return;
+      }
+      router.push('/');
     } catch (err) {
       failToast('Failed to send recovery link');
     }
@@ -31,12 +39,20 @@ export default function ForgotPasswordModal() {
   return (
     <FormContainer title='Send a verification code to your email'>
       <InputField
-        onChange={(e) => setEmail(e.target.value)}
-        type='email'
-        label='Your email'
-        placeholder='name@company.com'
+        onChange={(e) => setPassword(e.target.value)}
+        type='password'
+        label='Your new password'
+        placeholder='Password'
         required
-        value={email}
+        value={password}
+      />
+      <InputField
+        onChange={(e) => setToken(e.target.value)}
+        type='text'
+        label='Verification token'
+        placeholder='Token'
+        required
+        value={token}
       />
       <Button onClick={handleSendRecoveryLink} text={'Send recovery link'} />
     </FormContainer>

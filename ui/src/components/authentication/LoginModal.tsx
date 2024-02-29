@@ -89,7 +89,7 @@ export default function LoginModal() {
           </div>
         </div>
         <Link
-          href='#'
+          href='/forgot-password'
           className='text-sm leading-none flex font-medium text-primary-600 hover:underline'
         >
           Forgot password?
@@ -102,7 +102,7 @@ export default function LoginModal() {
           href='/create-account'
           className='font-medium text-primary-600 hover:underline'
         >
-          Sign up
+          &nbsp;Sign up
         </Link>
       </p>
     </FormContainer>

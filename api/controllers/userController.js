@@ -65,14 +65,15 @@ exports.signout = asyncHandler(async (req, res, next) => {
 });
 
 exports.forgot_password = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
   let tokenId = crypto.randomBytes(32).toString('hex');
+  const user = await User.findOneAndUpdate(
+    { email: req.body.email },
+    { token: tokenId }
+  );
 
-  await Token.deleteMany({ userId: user._id });
-  await new Token({
-    userId: user._id,
-    token: tokenId,
-  }).save();
+  console.log('aqui');
+
+  if (!user) return res.status(400).json({ error: 'Email not found' });
 
   sendEmailToUser(req.body.email, tokenId, user._id, 'recovery');
 
@@ -81,23 +82,25 @@ exports.forgot_password = asyncHandler(async (req, res, next) => {
 
 exports.change_password = asyncHandler(async (req, res, next) => {
   if (req.isAuthenticated()) {
-    await User.findByIdAndUpdate(req.params.id, {
-      password: bcrypt.hashSync(req.body.password, 10),
-    });
+    await User.findOneAndUpdate(
+      { token: req.body.token },
+      {
+        password: bcrypt.hashSync(req.body.password, 10),
+      }
+    );
     return res.json({ message: 'Password changed' });
   }
   if (req.body.password.length < 4)
     return res
       .status(400)
       .json({ error: 'Password must be at least 4 characters long' });
-  let token = await User.findOne({
-    token: req.params.token,
-    userId: req.params.id,
-  });
-  if (!token) return res.status(400).json({ error: 'Token expired' });
-  await User.findByIdAndUpdate(req.params.id, {
-    password: bcrypt.hashSync(req.body.password, 10),
-  });
+
+  await User.findOneAndUpdate(
+    { token: req.body.token },
+    {
+      password: bcrypt.hashSync(req.body.password, 10),
+    }
+  );
   return res.json({ message: 'Password changed' });
 });
 

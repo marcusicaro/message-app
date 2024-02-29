@@ -4,12 +4,14 @@ import Button from '@/components/shared/Button';
 import FormContainer from '@/components/shared/FormContainer';
 import InputField from '@/components/shared/InputField';
 import { failToast, successToast } from '@/lib/toast';
+import { useRouter } from 'next/navigation';
 
 export default function CreateAccountForm() {
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const router = useRouter();
 
   async function createAccount() {
     if (password !== confirmPassword) {
@@ -38,6 +40,7 @@ export default function CreateAccountForm() {
 
       if (data.email) {
         successToast('Account created, check your email to verify');
+        router.push('/');
         return;
       }
       successToast('Account created');

@@ -23,7 +23,6 @@ async function sendEmailToUser(userEmail, token, username, type = 'signup') {
       subject: 'Password recovery link ✔',
       html: `<div>
       <p>Your recovery code is: <b>${token}</b></p>
-      <a href=${process.env.BASE_URL}/user/change-password/${username}/>Click here to reset your password</a>
       </div>`,
     });
     return;
