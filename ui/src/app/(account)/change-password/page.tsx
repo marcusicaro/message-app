@@ -2,7 +2,7 @@
 import Button from '@/components/shared/Button';
 import FormContainer from '@/components/shared/FormContainer';
 import InputField from '@/components/shared/InputField';
-import { failToast } from '@/lib/toast';
+import { failToast, successToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -30,6 +30,7 @@ export default function ChangePasswordPage() {
         failToast(data.error);
         return;
       }
+      successToast('Password changed successfully');
       router.push('/');
     } catch (err) {
       failToast('Failed to send recovery link');

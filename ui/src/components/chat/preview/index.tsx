@@ -11,6 +11,7 @@ interface ChatPreview {
   group: boolean;
   lastGroupMessager?: string;
   selected: boolean;
+  clearActiveChat: () => void;
 }
 
 function ChatPreview(props: ChatPreview): JSX.Element {
@@ -39,7 +40,10 @@ function ChatPreview(props: ChatPreview): JSX.Element {
           )}
         </span>
       </div>
-      <DeleteGroupButton groupID={props.id} />
+      <DeleteGroupButton
+        clearActiveChat={props.clearActiveChat}
+        groupID={props.id}
+      />
     </div>
   );
 }

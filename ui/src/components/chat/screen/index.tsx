@@ -4,8 +4,10 @@ import io from 'socket.io-client';
 import { mutate } from 'swr';
 import AddMember from './AddMember';
 import Members from './Member';
-import ChatScreenMessage, { Message } from './message';
+import ChatScreenMessage from './message';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { failToast } from '@/lib/toast';
+import { Message } from '@/lib/types';
 
 interface ChatScreen {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -63,7 +65,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
       setMessage('');
       mutate('http://localhost:3002/group');
     } catch (error) {
-      console.log('error: ', error);
+      failToast('Failed to send message');
     }
   }
 

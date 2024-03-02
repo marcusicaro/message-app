@@ -2,6 +2,9 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import Loader from '@/components/ui/loader';
+import { failToast, successToast } from '@/lib/toast';
+import { fail } from 'assert';
 import { PlusIcon } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { mutate } from 'swr';
@@ -9,8 +12,10 @@ import { mutate } from 'swr';
 export default function Component() {
   const [title, setTitle] = useState('');
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    setLoading(true);
     event.preventDefault();
 
     try {
@@ -24,16 +29,19 @@ export default function Component() {
         credentials: 'include',
       });
 
-      const data = await response.json();
       setOpen(false);
+      successToast('Group created');
       mutate('http://localhost:3002/group');
+      setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
+      setLoading(false);
+      failToast('Failed to create group');
     }
   }
 
   return (
     <>
+      {loading && <Loader />}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className='h-9 w-9 p-1 rounded-full' variant='ghost'>

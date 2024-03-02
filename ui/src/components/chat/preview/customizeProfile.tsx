@@ -4,15 +4,19 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FormEvent, useEffect, useState } from 'react';
+import Loader from '@/components/ui/loader';
+import { failToast, successToast } from '@/lib/toast';
+import { FormEvent, useState } from 'react';
 
 export default function Component() {
   const [fileSelected, setFileSelected] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { state, dispatch } = useUser();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    setLoading(true);
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -25,11 +29,19 @@ export default function Component() {
 
       // Handle response if necessary
       const data = await response.json();
-      dispatch({ type: 'LOGIN', payload: { profilePicture: "http://localhost:3002/" + data.profilePicture, username: state.username! } });
-      console.log('data.profilePicture: ', data.profilePicture);
-      setFileSelected(false)
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          profilePicture: 'http://localhost:3002/' + data.profilePicture,
+          username: state.username!,
+        },
+      });
+      successToast('Photo uploaded');
+      setFileSelected(false);
+      setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
+      setLoading(false);
+      failToast('Failed to upload photo');
     }
   }
 
@@ -48,10 +60,9 @@ export default function Component() {
     }
   };
 
-
-
   return (
     <>
+      {loading && <Loader />}
       <Dialog>
         <DialogTrigger asChild>
           <Button className='h-9 w-9 p-1 rounded-full' variant='ghost'>
@@ -75,7 +86,21 @@ export default function Component() {
                   className='p-3 rounded-full border cursor-pointer border-gray-200 hover:bg-blue-100 dark:border-gray-800'
                   htmlFor='avatar'
                 >
-                  {fileSelected ? <img src={preview!} alt="File preview" className='h-16 w-16 rounded-full' /> : state.profilePicture ? <img src={state.profilePicture!} alt='Profile picture' className='h-16 w-16 rounded-full' /> : <UserIcon className='h-6 w-6' />}
+                  {fileSelected ? (
+                    <img
+                      src={preview!}
+                      alt='File preview'
+                      className='h-16 w-16 rounded-full'
+                    />
+                  ) : state.profilePicture ? (
+                    <img
+                      src={state.profilePicture!}
+                      alt='Profile picture'
+                      className='h-16 w-16 rounded-full'
+                    />
+                  ) : (
+                    <UserIcon className='h-6 w-6' />
+                  )}
                 </Label>
               </div>
               {fileSelected ? (
@@ -97,7 +122,6 @@ export default function Component() {
           </div>
           <form className='grid gap-4 mt-4'>
             <div className='flex justify-end gap-2'>
-
               <div>
                 <Button variant='outline'>Cancel</Button>
               </div>
@@ -115,7 +139,6 @@ export default function Component() {
 }
 
 function UserIcon(props: any) {
-
   return (
     <svg
       {...props}

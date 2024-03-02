@@ -10,49 +10,67 @@ import {
 import { Button } from '@/components/ui/button';
 import { mutate } from 'swr';
 import { useState } from 'react';
+import { failToast, successToast } from '@/lib/toast';
+import Loader from '@/components/ui/loader';
 
-export function DeleteGroupButton(props: { groupID: string }) {
+export function DeleteGroupButton(props: {
+  groupID: string;
+  clearActiveChat: () => void;
+}) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function deleteGroup() {
-    const response = await fetch(
-      `http://localhost:3002/group/${props.groupID}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      }
-    );
+    setLoading(true);
+    let data;
+    try {
+      const response = await fetch(
+        `http://localhost:3002/group/${props.groupID}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
 
-    let data = await response.json();
-    mutate('http://localhost:3002/group');
-    setOpen(false);
-    console.log(data);
+      data = await response.json();
+      props.clearActiveChat();
+      mutate('http://localhost:3002/group');
+      setOpen(false);
+      successToast('Group deleted');
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      failToast(data?.error ? data?.error : 'Failed to delete group');
+    }
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className='inline-block p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800/50'>
-        <TrashIcon className='w-5 h-5' />
-      </PopoverTrigger>
-      <PopoverContent className='w-48'>
-        <div />
-        <div />
-        <div>
-          <div className='leading-none'>Are you sure you want to delete?</div>
-          <div className='flex justify-end gap-2 mt-2'>
-            <Button onClick={() => setOpen(false)} size='sm'>
-              Cancel
-            </Button>
-            <Button size='sm' variant='destructive' onClick={deleteGroup}>
-              Delete
-            </Button>
+    <>
+      {loading && <Loader />}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger className='inline-block p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800/50'>
+          <TrashIcon className='w-5 h-5' />
+        </PopoverTrigger>
+        <PopoverContent className='w-48'>
+          <div />
+          <div />
+          <div>
+            <div className='leading-none'>Are you sure you want to delete?</div>
+            <div className='flex justify-end gap-2 mt-2'>
+              <Button onClick={() => setOpen(false)} size='sm'>
+                Cancel
+              </Button>
+              <Button size='sm' variant='destructive' onClick={deleteGroup}>
+                Delete
+              </Button>
+            </div>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 }
 

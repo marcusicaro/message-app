@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Group = require('../models/group');
 const sendEmailToUser = require('../utils/sendEmail');
 const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
@@ -20,6 +21,10 @@ exports.signup = asyncHandler(async (req, res, next) => {
     email: req.body.email,
     token: tokenId,
   }).save();
+
+  let group = await Group.findById('65e31770f4665bbea48969d4');
+  group.members.push(user._id);
+  await group.save();
 
   try {
     await sendEmailToUser(req.body.email, tokenId, req.body.username);
@@ -70,8 +75,6 @@ exports.forgot_password = asyncHandler(async (req, res, next) => {
     { email: req.body.email },
     { token: tokenId }
   );
-
-  console.log('aqui');
 
   if (!user) return res.status(400).json({ error: 'Email not found' });
 

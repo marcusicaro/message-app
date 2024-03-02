@@ -21,6 +21,12 @@ export default function Page() {
   const [activeChatName, setActiveChatName] = useState<string>('');
   const router = useRouter();
 
+  function clearActiveChat() {
+    setActiveChat(null);
+    setActiveChatId('');
+    setActiveChatName('');
+  }
+
   const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
     const id = e.currentTarget.getAttribute('data-id') as string;
@@ -52,6 +58,7 @@ export default function Page() {
             id={group._id}
             key={index}
             onClick={changeActiveChat}
+            clearActiveChat={clearActiveChat}
             name={group.title}
             lastMessage={
               group.lastMessage !== null
@@ -94,14 +101,16 @@ export default function Page() {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      changeActiveChat({
-        currentTarget: {
-          getAttribute: (attr: string) => {
-            if (attr === 'data-name') return data[0].title;
-            if (attr === 'data-id') return data[0]._id;
+      if (activeChatName === '') {
+        changeActiveChat({
+          currentTarget: {
+            getAttribute: (attr: string) => {
+              if (attr === 'data-name') return data[0].title;
+              if (attr === 'data-id') return data[0]._id;
+            },
           },
-        },
-      } as React.MouseEvent<HTMLDivElement>);
+        } as React.MouseEvent<HTMLDivElement>);
+      }
     }
   }, [data]);
 

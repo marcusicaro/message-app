@@ -30,7 +30,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/components/BgHome.js",
-    "src/components/button.jsx"
+    "src/components/button.jsx",
+    "src/lib/loader.js"
   ],
   "exclude": ["node_modules"]
 }
