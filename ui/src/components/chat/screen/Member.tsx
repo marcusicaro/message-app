@@ -14,6 +14,7 @@ import useSWR from 'swr';
 import { useState } from 'react';
 import DeleteMember from './DeleteMember';
 import { failToast } from '@/lib/toast';
+import { projectUrl } from '@/lib/environments';
 
 export default function Members(props: any) {
   const [members, setMembers] = useState([]);

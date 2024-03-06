@@ -12,6 +12,7 @@ import { mutate } from 'swr';
 import { useState } from 'react';
 import { failToast, successToast } from '@/lib/toast';
 import Loader from '@/components/ui/loader';
+import { projectUrl } from '@/lib/environments';
 
 export function DeleteGroupButton(props: {
   groupID: string;

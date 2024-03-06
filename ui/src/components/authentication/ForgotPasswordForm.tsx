@@ -6,6 +6,7 @@ import { failToast, successToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Loader from '../ui/loader';
+import { projectUrl } from '@/lib/environments';
 
 export default function ForgotPasswordModal() {
   const [email, setEmail] = useState('');

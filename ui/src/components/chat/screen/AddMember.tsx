@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useToast } from '@/components/ui/use-toast';
+import { projectUrl } from '@/lib/environments';
 import { failToast, successToast } from '@/lib/toast';
 import { useState } from 'react';
 import { mutate } from 'swr';

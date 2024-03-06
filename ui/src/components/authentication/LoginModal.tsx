@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useUser } from '../context/user';
 import { failToast } from '@/lib/toast';
 import Loader from '../ui/loader';
+import { projectUrl } from '@/lib/environments';
 
 export default function LoginModal() {
   const { state, dispatch } = useUser();

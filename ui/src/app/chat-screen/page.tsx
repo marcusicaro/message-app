@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Message } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { projectUrl } from '@/lib/environments';
 
 interface ChatPreviewProps {
   onClick: () => void;

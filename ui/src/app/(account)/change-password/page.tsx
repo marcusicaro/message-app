@@ -2,6 +2,7 @@
 import Button from '@/components/shared/Button';
 import FormContainer from '@/components/shared/FormContainer';
 import InputField from '@/components/shared/InputField';
+import { projectUrl } from '@/lib/environments';
 import { failToast, successToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { projectUrl } from '@/lib/environments';
 import { failToast, successToast } from '@/lib/toast';
 import { fail } from 'assert';
 import { PlusIcon, TrashIcon } from 'lucide-react';

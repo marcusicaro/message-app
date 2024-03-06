@@ -6,6 +6,7 @@ import InputField from '@/components/shared/InputField';
 import { failToast, successToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import Loader from '../ui/loader';
+import { projectUrl } from '@/lib/environments';
 
 export default function CreateAccountForm() {
   const [username, setUsername] = useState<string>('');

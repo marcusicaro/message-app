@@ -8,6 +8,7 @@ import ChatScreenMessage from './message';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { failToast } from '@/lib/toast';
 import { Message } from '@/lib/types';
+import { projectUrl } from '@/lib/environments';
 
 interface ChatScreen {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
