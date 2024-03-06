@@ -22,7 +22,7 @@ export default function LoginModal() {
     dispatch({
       type: 'LOGIN',
       payload: {
-        profilePicture: 'http://localhost:3002/' + profilePicture,
+        profilePicture: projectUrl + '/' + profilePicture,
         username: username,
       },
     });
@@ -32,7 +32,7 @@ export default function LoginModal() {
   async function handleLogin(): Promise<void> {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3002/user/signin', {
+      const res = await fetch(projectUrl + '/user/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

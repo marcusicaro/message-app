@@ -19,7 +19,7 @@ export default function Component() {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3002/group/create', {
+      const response = await fetch(projectUrl + '/group/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export default function Component() {
 
       setOpen(false);
       successToast('Group created');
-      mutate('http://localhost:3002/group');
+      mutate(projectUrl + '/group');
       setLoading(false);
     } catch (error) {
       setLoading(false);

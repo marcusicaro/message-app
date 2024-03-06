@@ -32,7 +32,7 @@ export default function Page() {
     const id = e.currentTarget.getAttribute('data-id') as string;
 
     try {
-      let res = await fetch(`http://localhost:3002/message/${id}`, {
+      let res = await fetch(projectUrl + `/message/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application',
@@ -94,10 +94,7 @@ export default function Page() {
     return data;
   };
 
-  const { data, error, isLoading } = useSWR(
-    'http://localhost:3002/group',
-    fetcher
-  );
+  const { data, error, isLoading } = useSWR(projectUrl + '/group', fetcher);
 
   useEffect(() => {
     if (data && data.length > 0) {

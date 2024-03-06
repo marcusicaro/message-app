@@ -23,7 +23,7 @@ export default function CreateAccountForm() {
     }
 
     try {
-      const res = await fetch('http://localhost:3002/user/signup', {
+      const res = await fetch(projectUrl + '/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

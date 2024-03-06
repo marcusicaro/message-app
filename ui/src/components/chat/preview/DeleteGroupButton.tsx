@@ -24,20 +24,17 @@ export function DeleteGroupButton(props: {
     setLoading(true);
     let data;
     try {
-      const response = await fetch(
-        `http://localhost:3002/group/${props.groupID}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        }
-      );
+      const response = await fetch(projectUrl + `/group/${props.groupID}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
 
       data = await response.json();
       props.clearActiveChat();
-      mutate('http://localhost:3002/group');
+      mutate(projectUrl + '/group');
       setOpen(false);
       successToast('Group deleted');
       setLoading(false);

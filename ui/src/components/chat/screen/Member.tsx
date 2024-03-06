@@ -38,7 +38,7 @@ export default function Members(props: any) {
   };
 
   const { data, error, isLoading } = useSWR(
-    props.id ? 'http://localhost:3002/group/' + props.id + '/members' : null,
+    props.id ? projectUrl + '/group/' + props.id + '/members' : null,
     fetcher
   );
 
@@ -60,7 +60,7 @@ export default function Members(props: any) {
                       {member.profilePicture && (
                         <AvatarImage
                           alt={'@' + member.username}
-                          src={'http://localhost:3002/' + member.profilePicture}
+                          src={projectUrl + '/' + member.profilePicture}
                         />
                       )}
                       <AvatarFallback>

@@ -16,7 +16,7 @@ export default function DeleteMember(props: any) {
 
     try {
       const response = await fetch(
-        'http://localhost:3002/group/' + props.id + '/remove-member',
+        projectUrl + '/group/' + props.id + '/remove-member',
         {
           method: 'DELETE',
           headers: {
@@ -29,7 +29,7 @@ export default function DeleteMember(props: any) {
       );
 
       const data = await response.json();
-      mutate('http://localhost:3002/group/' + props.id + '/members');
+      mutate(projectUrl + '/group/' + props.id + '/members');
       successToast('Member removed');
     } catch (error) {
       failToast('Failed to remove member');

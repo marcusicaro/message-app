@@ -13,7 +13,7 @@ export default function ChangePasswordPage() {
 
   async function handleSendRecoveryLink() {
     try {
-      let response = await fetch('http://localhost:3002/user/change-password', {
+      let response = await fetch(projectUrl + '/user/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

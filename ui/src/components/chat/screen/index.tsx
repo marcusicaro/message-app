@@ -29,7 +29,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
   );
 
   useEffect(() => {
-    const socket = io('http://localhost:3002', {
+    const socket = io(projectUrl, {
       withCredentials: true,
     });
 
@@ -49,7 +49,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
 
   async function sendMessage() {
     try {
-      const res = await fetch('http://localhost:3002/message', {
+      const res = await fetch(projectUrl + '/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ function ChatScreen(props: ChatScreen): JSX.Element {
       });
       // let data = await res.json();
       setMessage('');
-      mutate('http://localhost:3002/group');
+      mutate(projectUrl + '/group');
     } catch (error) {
       failToast('Failed to send message');
     }

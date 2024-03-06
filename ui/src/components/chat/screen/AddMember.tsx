@@ -20,21 +20,18 @@ export default function AddMember(props: any) {
   const { toast } = useToast();
 
   async function addMember() {
-    let res = await fetch(
-      'http://localhost:3002/group/' + props.id + '/add-member',
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: member }),
-        credentials: 'include',
-      }
-    );
+    let res = await fetch(projectUrl + '/group/' + props.id + '/add-member', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: member }),
+      credentials: 'include',
+    });
     let data = await res.json();
     if (data.message) {
       successToast('Member added');
-      return mutate('http://localhost:3002/group/' + props.id + '/members');
+      return mutate(projectUrl + '/group/' + props.id + '/members');
     }
     failToast('Failed to add member');
   }

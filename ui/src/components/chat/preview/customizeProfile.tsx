@@ -21,7 +21,7 @@ export default function Component() {
 
     const formData = new FormData(event.currentTarget);
     try {
-      const response = await fetch('http://localhost:3002/user/photos/upload', {
+      const response = await fetch(projectUrl + '/user/photos/upload', {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -32,7 +32,7 @@ export default function Component() {
       dispatch({
         type: 'LOGIN',
         payload: {
-          profilePicture: 'http://localhost:3002/' + data.profilePicture,
+          profilePicture: projectUrl + '/' + data.profilePicture,
           username: state.username!,
         },
       });

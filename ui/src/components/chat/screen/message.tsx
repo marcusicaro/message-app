@@ -1,5 +1,3 @@
-import { Message, User } from '@/lib/types';
-import { useState } from 'react';
 import { useUser } from '@/components/context/user';
 
 export default function ChatScreenMessage(props: any): JSX.Element {

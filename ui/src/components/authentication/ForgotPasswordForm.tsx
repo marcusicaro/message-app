@@ -14,7 +14,7 @@ export default function ForgotPasswordModal() {
   async function handleSendRecoveryLink() {
     setLoading(true);
     try {
-      let res = await fetch('http://localhost:3002/user/forgot-password', {
+      let res = await fetch(projectUrl + '/user/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
