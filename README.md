@@ -1,3 +1,3 @@
-Preview: https://message-app-swart.vercel.app/
+Preview [here](https://message-app-frontend-phi.vercel.app/)
 
 Deployed on vercel
