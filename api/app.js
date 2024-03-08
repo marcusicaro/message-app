@@ -6,7 +6,12 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: [
+      'https://message-app-frontend-mkrcm6w8p-marcusicaro.vercel.app',
+      'https://message-app-frontend-phi.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
   },
@@ -45,10 +50,10 @@ app.use(
 app.use(
   cors({
     origin: [
+      'https://message-app-frontend-mkrcm6w8p-marcusicaro.vercel.app',
+      'https://message-app-frontend-phi.vercel.app',
       'http://localhost:3000',
       'http://localhost:3001',
-      'https://localhost:3000',
-      'http://localhost:3000/chat-screen',
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
