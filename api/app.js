@@ -9,8 +9,6 @@ const io = new Server(server, {
     origin: [
       'https://message-app-frontend-mkrcm6w8p-marcusicaro.vercel.app',
       'https://message-app-frontend-phi.vercel.app',
-      'http://localhost:3000',
-      'http://localhost:3001',
     ],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
@@ -52,8 +50,6 @@ app.use(
     origin: [
       'https://message-app-frontend-mkrcm6w8p-marcusicaro.vercel.app',
       'https://message-app-frontend-phi.vercel.app',
-      'http://localhost:3000',
-      'http://localhost:3001',
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
