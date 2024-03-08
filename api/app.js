@@ -1,6 +1,21 @@
 const express = require('express');
 const User = require('./models/user');
+const { Server } = require('socket.io');
+const { createServer } = require('node:http');
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: [
+      'https://message-app-frontend-mkrcm6w8p-marcusicaro.vercel.app',
+      'https://message-app-frontend-phi.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ],
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    credentials: true,
+  },
+});
 const path = require('path');
 const createError = require('http-errors');
 const session = require('express-session');
@@ -22,12 +37,29 @@ app.use(
   session({
     secret: SessionSecret,
     resave: false,
-    saveUninitialized: false,
-    cookie: { secure: true, maxAge: 60000, httpOnly: true, sameSite: 'lax' },
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      maxAge: 3600000,
+      httpOnly: false,
+      sameSite: 'lax',
+    },
   })
 );
 
-app.use(cors({origin: ['http://localhost:3000', 'http://localhost:3002'], credentials: true}));
+app.use(
+  cors({
+    origin: [
+      'https://message-app-frontend-mkrcm6w8p-marcusicaro.vercel.app',
+      'https://message-app-frontend-phi.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(passport.authenticate('session'));
 
 // determines what to be stored locally, if I include images, should be here also to reduce queries on the db
@@ -70,9 +102,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-app.use('/message', messageRouter);
+app.use(
+  '/message',
+  (req, res, next) => {
+    req.io = io;
+    next();
+  },
+  messageRouter
+);
 app.use('/user', userRouter);
 app.use('/group', groupRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -81,15 +121,20 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+  console.log('err: ', err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.json({error: err.message});
+  res.json({ error: err.message });
 });
 
-app.listen(3002, () => console.log('app listening on port 3002!'));
+io.on('connection', (socket) => {
+  console.log('a user connected');
+});
+
+server.listen(3002, () => console.log('app listening on port 3002!'));
 
 module.exports = app;

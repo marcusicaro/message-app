@@ -1,5 +1,7 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+const OAuth2 = google.auth.OAuth2;
 
 let transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -13,25 +15,24 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-async function sendEmailToUser(userEmail, token, userId, type = 'signup') {
+async function sendEmailToUser(userEmail, token, username, type = 'signup') {
   if (type === 'recovery') {
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: '"marquinhos 👻" <marcusicaromc@gmail.com>',
       to: userEmail,
       subject: 'Password recovery link ✔',
       html: `<div>
       <p>Your recovery code is: <b>${token}</b></p>
-      <a href=${process.env.BASE_URL}/user/change-password/${userId}/>Click here to reset your password</a>
       </div>`,
     });
     return;
   }
 
-  const info = await transporter.sendMail({
+  await transporter.sendMail({
     from: '"marquinhos 👻" <marcusicaromc@gmail.com>',
     to: userEmail,
     subject: 'Verification mail ✔',
-    html: `<a href=${process.env.BASE_URL}/token/${userId}/${token}>Click here to validate</a>`,
+    html: `<a href=${process.env.BASE_URL}/user/${username}/${token}>Click here to validate</a>`,
   });
 }
 

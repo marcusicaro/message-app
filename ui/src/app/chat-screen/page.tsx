@@ -1,106 +1,145 @@
 'use client';
 import ChatPreview from '@/components/chat/preview';
-import React, { useEffect, useState } from 'react';
+import CustomizeProfile from '@/components/chat/preview/customizeProfile';
+import CreateGroup from '@/components/chat/preview/createGroup';
 import ChatScreen from '@/components/chat/screen';
-import { RequestMethod, callAPI } from '@/components/http/callAPI';
+import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { Message } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { projectUrl } from '@/lib/environments';
 
 interface ChatPreviewProps {
   onClick: () => void;
   name: string;
-  // ...other props
   selected: boolean;
 }
 
 export default function Page() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string>('');
+  const [activeChatName, setActiveChatName] = useState<string>('');
+  const router = useRouter();
 
-  useEffect(() => {
-    callAPI('http://localhost:3002/group/', RequestMethod.GET, (data)=> console.log(data), (data) => console.log(data), undefined, 'include')
-  }, [])
+  function clearActiveChat() {
+    setActiveChat(null);
+    setActiveChatId('');
+    setActiveChatName('');
+  }
 
-  const changeActiveChat = (e: React.MouseEvent<HTMLDivElement>) => {
+  const changeActiveChat = async (e: React.MouseEvent<HTMLDivElement>) => {
     const name = e.currentTarget.getAttribute('data-name') as string;
-    setActiveChat(name);
+    const id = e.currentTarget.getAttribute('data-id') as string;
+
+    try {
+      let res = await fetch(projectUrl + `/message/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application',
+        },
+        credentials: 'include',
+      });
+
+      let data = await res.json();
+      setActiveChatName(name);
+      setActiveChatId(id);
+      setChatMessages(data.messages);
+      setActiveChat(name);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
   };
 
+  function generateChatPreviews(data: any) {
+    if (data.length)
+      return data.map((group: any, index: number) => {
+        return (
+          <ChatPreview
+            id={group._id}
+            key={index}
+            onClick={changeActiveChat}
+            clearActiveChat={clearActiveChat}
+            name={group.title}
+            lastMessage={
+              group.lastMessage !== null
+                ? group.lastMessage.text
+                : 'Type the first message!'
+            }
+            imgSrc={group.imgSrc}
+            group={true}
+            lastGroupMessager={
+              group.lastMessage !== null
+                ? group.lastMessage.sender.username
+                : ''
+            }
+            selected={activeChat === group.name}
+          />
+        );
+      });
+
+    return router.push('/');
+  }
+
+  const fetcher = async (url: string) => {
+    let res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application',
+      },
+      credentials: 'include',
+    });
+
+    let data = await res.json();
+
+    return data;
+  };
+
+  const { data, error, isLoading } = useSWR(projectUrl + '/group', fetcher);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      if (activeChatName === '') {
+        changeActiveChat({
+          currentTarget: {
+            getAttribute: (attr: string) => {
+              if (attr === 'data-name') return data[0].title;
+              if (attr === 'data-id') return data[0]._id;
+            },
+          },
+        } as React.MouseEvent<HTMLDivElement>);
+      }
+    }
+  }, [data]);
+
   return (
-    <div>
+    <div className='w-full max-h-svh'>
       <div className='flex h-full flex-row justify-between bg-white'>
         <div className='flex flex-col w-2/5 border-r-2 overflow-y-auto'>
-          <div className='border-b-2 py-4 px-2'>
+          <div className='border-b-2 py-4 px-2 flex gap-2'>
             <input
               type='text'
-              placeholder='search chatting'
+              placeholder='Search chats...'
               className='py-2 px-2 border-2 border-gray-200 rounded-2xl w-full'
             />
+            <div className='flex items-center justify-center'>
+              <CreateGroup />
+              <CustomizeProfile />
+            </div>
           </div>
-
-          <ChatPreview
-            key={1}
-            onClick={changeActiveChat}
-            data-name='Marquinhos'
-            name='Marquinhos'
-            lastMessage='Dae man'
-            group={false}
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={false}
-          />
-          <ChatPreview
-            key={2}
-            onClick={changeActiveChat}
-            name='Grupo do Ianzinho'
-            lastMessage='Didi du'
-            group={true}
-            lastGroupMessager='Ian'
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={true}
-          />
-          <ChatPreview
-            key={3}
-            onClick={changeActiveChat}
-            name='Marquinhos'
-            lastMessage='Dae man'
-            group={false}
-            imgSrc='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-            selected={false}
-          />
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : error ? (
+            <div>Error</div>
+          ) : (
+            generateChatPreviews(data)
+          )}
         </div>
         <ChatScreen
+          name={activeChatName}
           onClick={() => null}
-          messages={[
-            {
-              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
-              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
-              sender: 'NotMarcus',
-            },
-            {
-              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
-              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
-              sender: 'NotMarcus',
-            },
-            {
-              text: 'oiiii',
-              picture:
-                'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              sender: 'Marcus',
-            },
-            {
-              text: 'oiiii',
-              picture:
-                'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-              sender: 'Marcus',
-            },
-            {
-              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
-              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
-              sender: 'NotMarcus',
-            },
-            {
-              text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat \n at praesentium, aut ullam delectus odio error sit rem. \nArchitecto nulla doloribus laborum illo rem enim dolor odio \n saepe, consequatur quas?',
-              picture: 'https://source.unsplash.com/vpOeXr5wmR4/600x600',
-              sender: 'NotMarcus',
-            },
-          ]}
+          messages={chatMessages}
+          chatId={activeChatId}
         />
       </div>
     </div>
